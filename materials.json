@@ -43,5 +43,10 @@
     "name": "Deșeu acumulatoare",
     "nameHu": "Akkumulátor hulladék",
     "pricePerKg": 1.7
+  },
+  {
+    "name": "test",
+    "nameHu": "test",
+    "pricePerKg": 8
   }
 ]
