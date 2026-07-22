@@ -405,6 +405,9 @@
       " " +
       AppConfig.formatRON(total) +
       "</div>" +
+      '<div class="receipt-fondmediu-note">' +
+      escapeHtml(t("receipt_fondmediu_note")) +
+      "</div>" +
       '<div class="receipt-signatures">' +
       '<div class="sig-line">' +
       escapeHtml(t("receipt_sig_company")) +
