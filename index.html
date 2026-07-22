@@ -34,6 +34,20 @@
       </div>
     </header>
 
+    <div class="vehicle-card">
+      <p class="vehicle-card-title">Jármű adatai</p>
+      <div class="item-row">
+        <div class="field">
+          <label>Autó márkája</label>
+          <input type="text" id="vehicle-make" placeholder="pl. Volkswagen">
+        </div>
+        <div class="field">
+          <label>Rendszám</label>
+          <input type="text" id="vehicle-plate" placeholder="pl. HR12ABC">
+        </div>
+      </div>
+    </div>
+
     <div id="items-list"></div>
     <div id="empty-hint" class="empty-hint">Nincs még tétel. Adj hozzá egyet lent.</div>
     <button id="add-row-btn" type="button">+ Új tétel</button>
@@ -43,8 +57,11 @@
       <span class="value" id="total-value">0,00 RON</span>
     </div>
 
+    <button id="print-btn" type="button">🖨️ Elismervény nyomtatása (nem hivatalos)</button>
     <button id="reset-btn" type="button">Új kliens (mindent töröl)</button>
   </div>
+
+  <div id="print-area" class="print-only"></div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>

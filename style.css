@@ -441,6 +441,155 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   min-height: 20px;
 }
 
+/* ---------- Vehicle info card (nyomtatáshoz) ---------- */
+.vehicle-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.vehicle-card .item-row { margin-bottom: 0; }
+.vehicle-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+#vehicle-make, #vehicle-plate {
+  width: 100%;
+  padding: 11px 10px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafcfb;
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+#vehicle-make:focus, #vehicle-plate:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
+  background: #fff;
+}
+
+/* ---------- Nyomtatás gomb ---------- */
+#print-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--accent-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+  transition: background .15s, transform .1s;
+}
+#print-btn:hover { background: #f2fbf5; }
+#print-btn:active { transform: translateY(1px); }
+
+/* ---------- Nyomtatható elismervény ---------- */
+.print-only { display: none; }
+
+@media print {
+  body * { visibility: hidden; }
+  #print-area, #print-area * { visibility: visible; }
+  #print-area {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+  }
+  @page { margin: 14mm; }
+}
+
+.receipt {
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #111;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px;
+}
+.receipt-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #111;
+}
+.receipt-logo-icon { font-size: 30px; line-height: 1; }
+.receipt-logo-text {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #111;
+}
+.receipt-subtitle {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555;
+  margin: 0 0 14px;
+}
+.receipt h2 { margin: 0 0 10px; font-size: 20px; }
+.receipt .receipt-disclaimer {
+  font-size: 11px;
+  color: #444;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.receipt .receipt-meta { font-size: 13px; margin-bottom: 16px; }
+.receipt .receipt-meta div { margin-bottom: 3px; }
+.receipt table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+}
+.receipt th, .receipt td {
+  border: 1px solid #999;
+  padding: 6px 8px;
+  text-align: left;
+}
+.receipt th { background: #f0f0f0; }
+.receipt td.num, .receipt th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.receipt .receipt-total {
+  text-align: right;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+.receipt .receipt-signatures {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 30px;
+  font-size: 12px;
+}
+.receipt .sig-line {
+  flex: 1;
+  border-top: 1px solid #333;
+  padding-top: 4px;
+  text-align: center;
+  color: #333;
+}
+
 /* ---------- Responsive: tablet & phone ---------- */
 @media (max-width: 640px) {
   #app-screen, #settings-screen { padding: 16px 12px 32px; }

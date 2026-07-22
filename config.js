@@ -1,6 +1,6 @@
 window.AppConfig = (function () {
   "use strict";
-  const ENCODED_PASSWORD = "c2ptZW0wMw==";
+  const ENCODED_PASSWORD = "bWVqbXMyMDE1";
 
   function decodePassword(encoded) {
     try {
