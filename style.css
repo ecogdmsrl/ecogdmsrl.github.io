@@ -122,6 +122,43 @@ body {
   font-weight: 600;
 }
 
+/* ---------- Nyelvváltó (HU / RO) ---------- */
+.lang-switch {
+  display: flex;
+  gap: 4px;
+  background: #eef2f0;
+  border-radius: 8px;
+  padding: 3px;
+  flex: 0 0 auto;
+}
+.lang-switch button {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.lang-switch button:hover { color: var(--text); }
+.lang-switch button.active {
+  background: var(--card);
+  color: var(--accent-dark);
+  box-shadow: var(--shadow-sm);
+}
+.login-lang-switch {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  margin: 0;
+  width: fit-content;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
+}
+
 /* ---------- Shared app / settings layout ---------- */
 #app-screen, #settings-screen {
   display: none;
@@ -359,7 +396,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 
 .materials-header-row, .material-row {
   display: grid;
-  grid-template-columns: 1fr 130px 40px;
+  grid-template-columns: 1fr 1fr 110px 40px;
   gap: 10px;
   align-items: center;
 }
@@ -380,7 +417,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 }
 .material-row:last-of-type { border-bottom: none; margin-bottom: 0; }
 
-.material-name-input, .material-price-input {
+.material-name-input, .material-name-hu-input, .material-price-input {
   width: 100%;
   padding: 11px 10px;
   font-size: 15px;
@@ -389,7 +426,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   background: #fafcfb;
   transition: border-color .15s, box-shadow .15s;
 }
-.material-name-input:focus, .material-price-input:focus {
+.material-name-input:focus, .material-name-hu-input:focus, .material-price-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
@@ -404,9 +441,9 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   margin-bottom: 12px;
 }
 #save-btn {
-  flex: 1;
-  min-width: 140px;
+  width: 100%;
   padding: 15px;
+  margin-bottom: 12px;
   font-size: 16px;
   font-weight: 700;
   border: none;
@@ -475,6 +512,89 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
+
+/* ---------- Materials warning banner (offline / fetch fail) ---------- */
+.materials-warning {
+  background: #fff8e6;
+  border: 1px solid #f0d9a0;
+  color: #8a6116;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+/* ---------- GitHub token card (settings.html) ---------- */
+#github-token-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+#github-token-card .field { margin-bottom: 10px; }
+#github-token-input {
+  width: 100%;
+  padding: 11px 10px;
+  font-size: 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafcfb;
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+#github-token-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
+  background: #fff;
+}
+.remember-token-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+.remember-token-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.token-hint {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+.token-hint code {
+  background: #f0f2f0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11.5px;
+}
+
+#refresh-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--accent-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, transform .1s;
+}
+#refresh-btn:hover { background: #f2fbf5; }
+#refresh-btn:active { transform: translateY(1px); }
 
 /* ---------- Nyomtatás gomb ---------- */
 #print-btn {
@@ -602,11 +722,17 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   .brand-icon { width: 56px; height: 56px; font-size: 28px; }
   #total-card { padding: 18px 20px; }
   #total-card .value { font-size: 25px; }
-  .materials-header-row, .material-row {
-    grid-template-columns: 1fr 92px 36px;
+  .materials-header-row { display: none; }
+  .material-row {
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px;
+    align-items: center;
   }
-  .material-name-input, .material-price-input { padding: 10px 8px; font-size: 14px; }
+  .material-name-input, .material-name-hu-input { flex: 1 1 100%; }
+  .material-price-input { flex: 1 1 auto; min-width: 90px; }
+  .remove-material-btn { flex: 0 0 auto; }
+  .material-name-input, .material-name-hu-input, .material-price-input { padding: 10px 8px; font-size: 14px; }
   header {
     flex-direction: column;
     align-items: flex-start;

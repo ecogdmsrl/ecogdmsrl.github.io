@@ -10,13 +10,17 @@
 <body>
 
   <div id="login-screen">
+    <div class="lang-switch login-lang-switch">
+      <button type="button" data-lang-btn="hu">HU</button>
+      <button type="button" data-lang-btn="ro">RO</button>
+    </div>
     <div id="login-box">
       <div class="brand-icon" aria-hidden="true">♻️</div>
-      <h1>Beállítások</h1>
-      <p class="login-subtitle">Árlista szerkesztése</p>
+      <h1 data-i18n="settings_login_title">Beállítások</h1>
+      <p class="login-subtitle" data-i18n="settings_login_subtitle">Árlista szerkesztése</p>
       <form id="login-form" autocomplete="off">
-        <input type="password" id="password-input" placeholder="Jelszó" autofocus>
-        <button type="submit">Belépés</button>
+        <input type="password" id="password-input" data-i18n-placeholder="login_password_placeholder" placeholder="Jelszó" autofocus>
+        <button type="submit" data-i18n="login_button">Belépés</button>
       </form>
       <div id="login-error"></div>
     </div>
@@ -26,33 +30,60 @@
     <header>
       <div class="brand">
         <span class="header-icon" aria-hidden="true">♻️</span>
-        <h1>Árlista beállítások</h1>
+        <h1 data-i18n="settings_header_title">Árlista beállítások</h1>
       </div>
-      <a class="link-btn" href="index.html">Vissza a kalkulátorhoz</a>
+      <div class="header-actions">
+        <div class="lang-switch">
+          <button type="button" data-lang-btn="hu">HU</button>
+          <button type="button" data-lang-btn="ro">RO</button>
+        </div>
+        <a class="link-btn" href="index.html" data-i18n="back_to_calc">Vissza a kalkulátorhoz</a>
+      </div>
     </header>
 
-    <p class="settings-desc">
-      Itt tudod szerkeszteni az egyes hulladéktípusok nettó felvásárlási árát (RON/kg),
-      amit a kalkulátor használ. Az anyag nevét és az árat bármikor átírhatod, felvehetsz
-      új sort, vagy törölhetsz egy meglévőt. A „Mentés” gomb csak ezen a böngészőn/eszközön
-      tárolja el a változtatást — ha több eszközön is használjátok
-      a kalkulátort, mindegyiken külön be kell állítani ugyanezt az árlistát.
+    <p class="settings-desc" data-i18n-html="settings_desc_html">
+      Az árlista egy közös <code>materials.json</code> fájlban él a GitHub repóban, így bármelyik
+      eszközről (telefon, PC, tablet) ugyanazt az árlistát látjátok — megtekinteni bárhonnan
+      lehet, jelszó/token nélkül is. A <strong>mentéshez</strong> viszont egy GitHub hozzáférési
+      token szükséges (lásd lent). Mentés után néhány percen belül frissül az árlista minden
+      eszközön (a GitHub rövid ideig cache-elheti a fájlt).
     </p>
 
     <div id="materials-card">
       <div class="materials-header-row">
-        <span>Anyag megnevezése</span>
-        <span>Egységár (RON/kg)</span>
+        <span data-i18n="materials_header_name">Anyag megnevezése (RO)</span>
+        <span data-i18n="materials_header_name_hu">Magyar név (opcionális)</span>
+        <span data-i18n="materials_header_price">Egységár (RON/kg)</span>
         <span></span>
       </div>
       <div id="materials-list"></div>
-      <button id="add-material-btn" type="button">+ Új anyag</button>
+      <button id="add-material-btn" type="button" data-i18n="add_material_button">+ Új anyag</button>
     </div>
 
     <div class="settings-actions">
-      <button id="save-btn" type="button">Mentés</button>
-      <button id="reset-defaults-btn" type="button">Alapértelmezett árlista visszaállítása</button>
+      <button id="refresh-btn" type="button" data-i18n="refresh_button">🔄 Legfrissebb betöltése</button>
+      <button id="reset-defaults-btn" type="button" data-i18n="reset_defaults_button">Alapértelmezett árak betöltése</button>
     </div>
+
+    <div id="github-token-card">
+      <p class="vehicle-card-title" data-i18n="github_token_title">GitHub mentési adatok</p>
+      <div class="field">
+        <label data-i18n="github_token_label">GitHub Personal Access Token</label>
+        <input type="password" id="github-token-input" placeholder="github_pat_..." autocomplete="off">
+      </div>
+      <label class="remember-token-label">
+        <input type="checkbox" id="remember-token-checkbox">
+        <span data-i18n="remember_token_label">Emlékezzen a tokenre ezen az eszközön</span>
+      </label>
+      <p class="token-hint" data-i18n-html="token_hint_html">
+        A tokent egyszer kell létrehozni: GitHub.com → profilkép → Settings → Developer settings →
+        Personal access tokens → Fine-grained tokens → Generate new token. Repository access:
+        csak az <code>ecogdmsrl.github.io</code> repó. Permissions → Contents:
+        <strong>Read and write</strong>. Minden más maradjon "No access". Részletek a README-ben.
+      </p>
+    </div>
+
+    <button id="save-btn" type="button" data-i18n="save_button_github">Mentés GitHub-ra</button>
 
     <div id="save-status"></div>
   </div>

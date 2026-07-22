@@ -10,13 +10,17 @@
 <body>
 
   <div id="login-screen">
+    <div class="lang-switch login-lang-switch">
+      <button type="button" data-lang-btn="hu">HU</button>
+      <button type="button" data-lang-btn="ro">RO</button>
+    </div>
     <div id="login-box">
       <div class="brand-icon" aria-hidden="true">♻️</div>
-      <h1>Anyagátvétel kalkulátor</h1>
-      <p class="login-subtitle">Belső eszköz a felvásárlási elszámoláshoz</p>
+      <h1 data-i18n="calc_login_title">Anyagátvétel kalkulátor</h1>
+      <p class="login-subtitle" data-i18n="calc_login_subtitle">Belső eszköz a felvásárlási elszámoláshoz</p>
       <form id="login-form" autocomplete="off">
-        <input type="password" id="password-input" placeholder="Jelszó" autofocus>
-        <button type="submit">Belépés</button>
+        <input type="password" id="password-input" data-i18n-placeholder="login_password_placeholder" placeholder="Jelszó" autofocus>
+        <button type="submit" data-i18n="login_button">Belépés</button>
       </form>
       <div id="login-error"></div>
     </div>
@@ -26,39 +30,47 @@
     <header>
       <div class="brand">
         <span class="header-icon" aria-hidden="true">♻️</span>
-        <h1>Anyagátvétel kalkulátor</h1>
+        <h1 data-i18n="calc_header_title">Anyagátvétel kalkulátor</h1>
       </div>
       <div class="header-actions">
-        <a class="link-btn" href="settings.html">Beállítások</a>
-        <button id="logout-btn" type="button">Kilépés</button>
+        <div class="lang-switch">
+          <button type="button" data-lang-btn="hu">HU</button>
+          <button type="button" data-lang-btn="ro">RO</button>
+        </div>
+        <a class="link-btn" href="settings.html" data-i18n="settings_link">Beállítások</a>
+        <button id="logout-btn" type="button" data-i18n="logout_button">Kilépés</button>
       </div>
     </header>
 
+    <div id="materials-warning" class="materials-warning" data-i18n="materials_warning" style="display:none">
+      Nem sikerült elérni a legfrissebb árlistát az internetről — alapértelmezett árak jelennek meg, amíg nincs kapcsolat.
+    </div>
+
     <div class="vehicle-card">
-      <p class="vehicle-card-title">Jármű adatai</p>
+      <p class="vehicle-card-title" data-i18n="vehicle_card_title">Jármű adatai</p>
       <div class="item-row">
         <div class="field">
-          <label>Autó márkája</label>
-          <input type="text" id="vehicle-make" placeholder="pl. Volkswagen">
+          <label data-i18n="vehicle_make_label">Autó márkája</label>
+          <input type="text" id="vehicle-make" data-i18n-placeholder="vehicle_make_placeholder" placeholder="pl. Volkswagen">
         </div>
         <div class="field">
-          <label>Rendszám</label>
-          <input type="text" id="vehicle-plate" placeholder="pl. HR12ABC">
+          <label data-i18n="vehicle_plate_label">Rendszám</label>
+          <input type="text" id="vehicle-plate" data-i18n-placeholder="vehicle_plate_placeholder" placeholder="pl. HR12ABC">
         </div>
       </div>
     </div>
 
     <div id="items-list"></div>
-    <div id="empty-hint" class="empty-hint">Nincs még tétel. Adj hozzá egyet lent.</div>
-    <button id="add-row-btn" type="button">+ Új tétel</button>
+    <div id="empty-hint" class="empty-hint" data-i18n="empty_hint">Nincs még tétel. Adj hozzá egyet lent.</div>
+    <button id="add-row-btn" type="button" data-i18n="add_item_button">+ Új tétel</button>
 
     <div id="total-card">
-      <span class="label">Fizetendő összesen</span>
+      <span class="label" data-i18n="total_label">Fizetendő összesen</span>
       <span class="value" id="total-value">0,00 RON</span>
     </div>
 
-    <button id="print-btn" type="button">🖨️ Elismervény nyomtatása (nem hivatalos)</button>
-    <button id="reset-btn" type="button">Új kliens (mindent töröl)</button>
+    <button id="print-btn" type="button" data-i18n="print_button">🖨️ Elismervény nyomtatása (nem hivatalos)</button>
+    <button id="reset-btn" type="button" data-i18n="reset_button">Új kliens (mindent töröl)</button>
   </div>
 
   <div id="print-area" class="print-only"></div>

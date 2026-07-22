@@ -2,6 +2,11 @@
   "use strict";
 
   const AppConfig = window.AppConfig;
+  const t = AppConfig.t;
+
+  AppConfig.initLangSwitcher(function () {
+    refreshMaterialSelectLabels();
+  });
 
   const loginScreen = document.getElementById("login-screen");
   const appScreen = document.getElementById("app-screen");
@@ -11,25 +16,40 @@
   const logoutBtn = document.getElementById("logout-btn");
 
   let MATERIALS = [];
+  const materialsWarning = document.getElementById("materials-warning");
+  const loginSubmitBtn = loginForm.querySelector("button[type=submit]");
 
-  function refreshMaterials() {
-    MATERIALS = AppConfig.loadMaterials();
+  async function refreshMaterials() {
+    const result = await AppConfig.fetchMaterials();
+    MATERIALS = result.materials;
+    if (materialsWarning) {
+      materialsWarning.style.display = result.ok ? "none" : "block";
+    }
+    return result;
   }
 
-  loginForm.addEventListener("submit", function (e) {
+  loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    if (AppConfig.checkPassword(passwordInput.value)) {
-      refreshMaterials();
-      loginScreen.style.display = "none";
-      appScreen.style.display = "block";
-      loginError.textContent = "";
-      passwordInput.value = "";
-      if (itemCount() === 0) addItemRow();
-    } else {
-      loginError.textContent = "Hibás jelszó.";
+    if (!AppConfig.checkPassword(passwordInput.value)) {
+      loginError.textContent = t("login_error");
       passwordInput.value = "";
       passwordInput.focus();
+      return;
     }
+
+    loginError.textContent = "";
+    passwordInput.value = "";
+    const originalBtnText = loginSubmitBtn.textContent;
+    loginSubmitBtn.disabled = true;
+    loginSubmitBtn.textContent = t("login_loading");
+
+    await refreshMaterials();
+
+    loginSubmitBtn.disabled = false;
+    loginSubmitBtn.textContent = originalBtnText;
+    loginScreen.style.display = "none";
+    appScreen.style.display = "block";
+    resetAll();
   });
 
   logoutBtn.addEventListener("click", function () {
@@ -44,9 +64,6 @@
   const addRowBtn = document.getElementById("add-row-btn");
   const resetBtn = document.getElementById("reset-btn");
 
-  // ---------------------------------------------------------
-  // Jármű adatok + nyomtatás (nincs mentés, csak a nyomtatáshoz)
-  // ---------------------------------------------------------
   const vehicleMakeInput = document.getElementById("vehicle-make");
   const vehiclePlateInput = document.getElementById("vehicle-plate");
   const printBtn = document.getElementById("print-btn");
@@ -61,8 +78,19 @@
     MATERIALS.forEach(function (mat, idx) {
       const opt = document.createElement("option");
       opt.value = String(idx);
-      opt.textContent = mat.name;
+      opt.textContent = AppConfig.displayMaterialName(mat);
       select.appendChild(opt);
+    });
+  }
+
+  function refreshMaterialSelectLabels() {
+    itemsList.querySelectorAll(".material-select").forEach(function (select) {
+      const savedValue = select.value;
+      buildMaterialOptions(select);
+      select.value = savedValue;
+    });
+    itemsList.querySelectorAll(".item-card").forEach(function (card) {
+      updateItemCard(card);
     });
   }
 
@@ -74,38 +102,38 @@
     card.innerHTML =
       '<div class="item-row item-row-top">' +
       '<div class="field">' +
-      "<label>Anyag</label>" +
+      '<label data-i18n="field_material">Anyag</label>' +
       '<select class="material-select"></select>' +
       "</div>" +
       '<div class="field">' +
-      "<label>Mérés típusa</label>" +
+      '<label data-i18n="field_measure_type">Mérés típusa</label>' +
       '<select class="mode-select">' +
-      '<option value="scale">Mérlegelés (kis mennyiség)</option>' +
-      '<option value="vehicle">Jármű mérés (nagy mennyiség)</option>' +
+      '<option value="scale" data-i18n="mode_scale_option">Mérlegelés (kis mennyiség)</option>' +
+      '<option value="vehicle" data-i18n="mode_vehicle_option">Jármű mérés (nagy mennyiség)</option>' +
       "</select>" +
       "</div>" +
-      '<button type="button" class="remove-btn" title="Tétel törlése">&times;</button>' +
+      '<button type="button" class="remove-btn" data-i18n-title="remove_item_title" title="Tétel törlése">&times;</button>' +
       "</div>" +
       '<div class="item-row mode-scale-fields">' +
       '<div class="field">' +
-      "<label>Súly (kg)</label>" +
+      '<label data-i18n="field_weight_scale">Súly (kg)</label>' +
       '<input type="number" class="kg-input" inputmode="decimal" min="0" step="0.1" placeholder="0">' +
       "</div>" +
       "</div>" +
       '<div class="item-row mode-vehicle-fields" style="display:none">' +
       '<div class="field">' +
-      "<label>Tele súly (kg) – jármű + anyag</label>" +
+      '<label data-i18n="field_weight_loaded">Tele súly (kg) – jármű + anyag</label>' +
       '<input type="number" class="kg-loaded-input" inputmode="decimal" min="0" step="0.1" placeholder="0">' +
       "</div>" +
       '<div class="field">' +
-      "<label>Üres súly (kg) – jármű üresen</label>" +
+      '<label data-i18n="field_weight_empty">Üres súly (kg) – jármű üresen</label>' +
       '<input type="number" class="kg-empty-input" inputmode="decimal" min="0" step="0.1" placeholder="0">' +
       "</div>" +
       "</div>" +
       '<div class="item-row item-summary">' +
-      '<span>Nettó súly: <strong class="net-kg-value">0 kg</strong></span>' +
-      '<span>Egységár: <strong class="price-value">-</strong></span>' +
-      '<span>Részösszeg: <strong class="subtotal-value">0,00 RON</strong></span>' +
+      '<span><span data-i18n="item_net_label">Nettó súly:</span> <strong class="net-kg-value">0 kg</strong></span>' +
+      '<span><span data-i18n="item_price_label">Egységár:</span> <strong class="price-value">-</strong></span>' +
+      '<span><span data-i18n="item_subtotal_label">Részösszeg:</span> <strong class="subtotal-value">0,00 RON</strong></span>' +
       "</div>";
 
     itemsList.appendChild(card);
@@ -142,6 +170,7 @@
 
     updateItemCard(card);
     refreshEmptyHint();
+    AppConfig.applyTranslations();
   }
 
   function computeNetKg(card, mode) {
@@ -214,7 +243,7 @@
 
   addRowBtn.addEventListener("click", addItemRow);
   resetBtn.addEventListener("click", function () {
-    if (confirm("Biztosan törlöd az összes tételt és új klienssel kezded?")) {
+    if (confirm(t("reset_confirm"))) {
       resetAll();
       vehicleMakeInput.value = "";
       vehiclePlateInput.value = "";
@@ -246,16 +275,19 @@
 
       let modeLabel;
       if (mode === "scale") {
-        modeLabel = "Mérlegelve";
+        modeLabel = t("receipt_mode_scale");
       } else {
         const loaded = parseFloat(card.querySelector(".kg-loaded-input").value);
         const empty = parseFloat(card.querySelector(".kg-empty-input").value);
         const validLoaded = isFinite(loaded) ? loaded : 0;
         const validEmpty = isFinite(empty) ? empty : 0;
         modeLabel =
-          "Tele " +
+          t("receipt_mode_loaded_prefix") +
+          " " +
           AppConfig.formatKg(validLoaded) +
-          " − üres " +
+          " − " +
+          t("receipt_mode_empty_word") +
+          " " +
           AppConfig.formatKg(validEmpty);
       }
 
@@ -271,10 +303,24 @@
     return items;
   }
 
+  function generateReceiptId() {
+    const now = new Date();
+    const pad = function (n) {
+      return String(n).padStart(2, "0");
+    };
+    const datePart =
+      now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate());
+    const timePart =
+      pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    return "ATV-" + datePart + "-" + timePart + "-" + rand;
+  }
+
   function buildReceiptHTML(items, total) {
     const make = vehicleMakeInput.value.trim();
     const plate = vehiclePlateInput.value.trim();
     const dateStr = new Date().toLocaleString("ro-RO");
+    const receiptId = generateReceiptId();
 
     let rows = "";
     items.forEach(function (it, idx) {
@@ -307,33 +353,65 @@
       '<span class="receipt-logo-icon" aria-hidden="true">♻️</span>' +
       '<span class="receipt-logo-text">ECO GDM SRL</span>' +
       "</div>" +
-      '<div class="receipt-subtitle">Átvételi elismervény</div>' +
+      '<div class="receipt-subtitle">' +
+      escapeHtml(t("receipt_subtitle")) +
+      "</div>" +
       '<div class="receipt-disclaimer">' +
-      "Ez NEM hivatalos bizonylat, kizárólag tájékoztató jellegű, belső elismervény az átvett anyagról és a kifizetett összegről. " +
-      "Hivatalos számla vagy bizonylat igénylése esetén kérje a cég hivatalos kiállítású dokumentumát." +
+      escapeHtml(t("receipt_disclaimer")) +
       "</div>" +
       '<div class="receipt-meta">' +
-      "<div><strong>Dátum:</strong> " +
+      "<div><strong>" +
+      escapeHtml(t("receipt_id_label")) +
+      "</strong> " +
+      escapeHtml(receiptId) +
+      "</div>" +
+      "<div><strong>" +
+      escapeHtml(t("receipt_date_label")) +
+      "</strong> " +
       escapeHtml(dateStr) +
       "</div>" +
-      "<div><strong>Autó márkája:</strong> " +
+      "<div><strong>" +
+      escapeHtml(t("receipt_make_label")) +
+      "</strong> " +
       (escapeHtml(make) || "-") +
       "</div>" +
-      "<div><strong>Rendszám:</strong> " +
+      "<div><strong>" +
+      escapeHtml(t("receipt_plate_label")) +
+      "</strong> " +
       (escapeHtml(plate) || "-") +
       "</div>" +
       "</div>" +
       "<table>" +
       "<thead><tr>" +
-      "<th>#</th><th>Anyag</th><th>Mérés</th>" +
-      '<th class="num">Nettó súly</th><th class="num">Egységár</th><th class="num">Összeg</th>' +
+      "<th>#</th><th>" +
+      escapeHtml(t("receipt_col_material")) +
+      "</th><th>" +
+      escapeHtml(t("receipt_col_measure")) +
+      "</th>" +
+      '<th class="num">' +
+      escapeHtml(t("receipt_col_net")) +
+      '</th><th class="num">' +
+      escapeHtml(t("receipt_col_price")) +
+      '</th><th class="num">' +
+      escapeHtml(t("receipt_col_sum")) +
+      "</th>" +
       "</tr></thead>" +
       "<tbody>" +
       rows +
       "</tbody>" +
       "</table>" +
-      '<div class="receipt-total">Fizetett összeg: ' +
+      '<div class="receipt-total">' +
+      escapeHtml(t("receipt_total_label")) +
+      " " +
       AppConfig.formatRON(total) +
+      "</div>" +
+      '<div class="receipt-signatures">' +
+      '<div class="sig-line">' +
+      escapeHtml(t("receipt_sig_company")) +
+      "</div>" +
+      '<div class="sig-line">' +
+      escapeHtml(t("receipt_sig_provider")) +
+      "</div>" +
       "</div>" +
       "</div>"
     );
@@ -342,7 +420,7 @@
   printBtn.addEventListener("click", function () {
     const items = collectItemsForPrint();
     if (items.length === 0) {
-      alert("Nincs tétel a nyomtatáshoz. Adj hozzá legalább egy anyagot.");
+      alert(t("print_empty_alert"));
       return;
     }
 
