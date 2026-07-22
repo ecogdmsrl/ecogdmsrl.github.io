@@ -42,11 +42,11 @@
     </header>
 
     <p class="settings-desc" data-i18n-html="settings_desc_html">
-      Az árlista egy közös <code>materials.json</code> fájlban él a GitHub repóban, így bármelyik
-      eszközről (telefon, PC, tablet) ugyanazt az árlistát látjátok — megtekinteni bárhonnan
-      lehet, jelszó/token nélkül is. A <strong>mentéshez</strong> viszont egy GitHub hozzáférési
-      token szükséges (lásd lent). Mentés után néhány percen belül frissül az árlista minden
-      eszközön (a GitHub rövid ideig cache-elheti a fájlt).
+      Amit itt módosítasz, azt minden eszközön (telefonon, gépen, tableten) automatikusan látni
+      fogjátok, külön beállítás nélkül. Az árlista <strong>megnézése</strong> bárhonnan működik,
+      jelszó és egyéb beállítás nélkül. A módosítások <strong>elmentéséhez</strong> viszont egyszer
+      be kell állítanod egy hozzáférési kulcsot — ezt lent, lépésről lépésre megtalálod. Mentés
+      után néhány percen belül mindenhol az új árak jelennek meg.
     </p>
 
     <div id="materials-card">
@@ -66,21 +66,19 @@
     </div>
 
     <div id="github-token-card">
-      <p class="vehicle-card-title" data-i18n="github_token_title">GitHub mentési adatok</p>
+      <p class="vehicle-card-title" data-i18n="github_token_title">Hozzáférési kulcs a mentéshez</p>
       <div class="field">
-        <label data-i18n="github_token_label">GitHub Personal Access Token</label>
+        <label data-i18n="github_token_label">Hozzáférési kulcs</label>
         <input type="password" id="github-token-input" placeholder="github_pat_..." autocomplete="off">
       </div>
       <label class="remember-token-label">
         <input type="checkbox" id="remember-token-checkbox">
-        <span data-i18n="remember_token_label">Emlékezzen a tokenre ezen az eszközön</span>
+        <span data-i18n="remember_token_label">Emlékezzen a kulcsra ezen az eszközön</span>
       </label>
-      <p class="token-hint" data-i18n-html="token_hint_html">
-        A tokent egyszer kell létrehozni: GitHub.com → profilkép → Settings → Developer settings →
-        Personal access tokens → Fine-grained tokens → Generate new token. Repository access:
-        csak az <code>ecogdmsrl.github.io</code> repó. Permissions → Contents:
-        <strong>Read and write</strong>. Minden más maradjon "No access". Részletek a README-ben.
-      </p>
+      <div class="token-hint" data-i18n-html="token_hint_html">
+        Írd be ide fent a kódot, és ha bepipálod, hogy „Emlékezzen a kulcsra ezen az eszközön”, legközelebb ezen a gépen/telefonon
+        nem kell újra beírnod
+      </div>
     </div>
 
     <button id="save-btn" type="button" data-i18n="save_button_github">Mentés GitHub-ra</button>

@@ -261,7 +261,7 @@ window.AppConfig = (function () {
       settings_header_title: "Árlista beállítások",
       back_to_calc: "Vissza a kalkulátorhoz",
       settings_desc_html:
-        "Az árlista egy közös <code>materials.json</code> fájlban él a GitHub repóban, így bármelyik eszközről (telefon, PC, tablet) ugyanazt az árlistát látjátok — megtekinteni bárhonnan lehet, jelszó/token nélkül is. A <strong>mentéshez</strong> viszont egy GitHub hozzáférési token szükséges (lásd lent). Mentés után néhány percen belül frissül az árlista minden eszközön (a GitHub rövid ideig cache-elheti a fájlt).",
+        "Amit itt módosítasz, azt minden eszközön (telefonon, gépen, tableten) automatikusan látni fogjátok, külön beállítás nélkül. Az árlista <strong>megnézése</strong> bárhonnan működik, jelszó és egyéb beállítás nélkül. A módosítások <strong>elmentéséhez</strong> viszont egyszer be kell állítanod egy hozzáférési kulcsot — ezt lent, lépésről lépésre megtalálod. Mentés után néhány percen belül mindenhol az új árak jelennek meg.",
       materials_header_name: "Anyag megnevezése (RO)",
       materials_header_name_hu: "Magyar név (opcionális)",
       materials_header_price: "Egységár (RON/kg)",
@@ -272,21 +272,21 @@ window.AppConfig = (function () {
         'Az alapértelmezett árlistát töltöm be a szerkesztőbe. A mentetlen módosítások elvesznek. A tényleges mentéshez utána még a "Mentés GitHub-ra" gombra is kattintanod kell. Folytatod?',
       reset_defaults_done:
         'Alapértelmezett árak betöltve a szerkesztőbe — mentéshez kattints a "Mentés GitHub-ra" gombra.',
-      github_token_title: "GitHub mentési adatok",
-      github_token_label: "GitHub Personal Access Token",
-      remember_token_label: "Emlékezzen a tokenre ezen az eszközön",
+      github_token_title: "Hozzáférési kulcs a mentéshez",
+      github_token_label: "Hozzáférési kulcs",
+      remember_token_label: "Emlékezzen a kulcsra ezen az eszközön",
       token_hint_html:
-        'A tokent egyszer kell létrehozni: GitHub.com → profilkép → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Repository access: csak az <code>ecogdmsrl.github.io</code> repó. Permissions → Contents: <strong>Read and write</strong>. Minden más maradjon "No access". Részletek a README-ben.',
+        "Írd be ide fent a kódot, és ha bepipálod, hogy „Emlékezzen a kulcsra ezen az eszközön”, legközelebb ezen a gépen/telefonon nem kell újra beírnod.",
       save_button_github: "Mentés GitHub-ra",
       status_min_one: "Legalább egy érvényes anyagot adj meg (név + ár).",
       status_need_token:
-        "A mentéshez add meg a GitHub hozzáférési tokent lent.",
+        "A mentéshez előbb add meg lent a hozzáférési kulcsot.",
       status_saving: "Mentés…",
       status_saved:
         "Mentve. Néhány percen belül minden eszközön frissül az árlista.",
       status_fetch_fail:
-        "Nem sikerült elérni a materials.json fájlt — alapértelmezett árak jelennek meg.",
-      status_refreshed: "Legfrissebb árlista betöltve GitHub-ról.",
+        "Nem sikerült elérni a legfrissebb árlistát az internetről — egyelőre az alapértelmezett árak jelennek meg.",
+      status_refreshed: "Legfrissebb árlista betöltve.",
 
       receipt_subtitle: "Átvételi elismervény",
       receipt_disclaimer:
@@ -352,7 +352,7 @@ window.AppConfig = (function () {
       settings_header_title: "Setări listă de prețuri",
       back_to_calc: "Înapoi la calculator",
       settings_desc_html:
-        "Lista de prețuri există într-un fișier comun <code>materials.json</code> în repo-ul GitHub, astfel încât de pe orice dispozitiv (telefon, PC, tabletă) vedeți aceeași listă — poate fi vizualizată de oriunde, fără parolă/token. Pentru <strong>salvare</strong> este nevoie însă de un token de acces GitHub (vezi mai jos). După salvare, lista se actualizează pe toate dispozitivele în câteva minute (GitHub poate păstra fișierul în cache pentru scurt timp).",
+        "Tot ce modifici aici va fi vizibil automat pe orice dispozitiv (telefon, calculator, tabletă), fără nicio setare suplimentară. <strong>Vizualizarea</strong> listei de prețuri funcționează oricând, fără parolă sau alte setări. Pentru a <strong>salva</strong> modificările, trebuie însă să configurezi o singură dată o cheie de acces — o găsești mai jos, explicată pas cu pas. După salvare, prețurile noi apar peste tot în câteva minute.",
       materials_header_name: "Denumire material (RO)",
       materials_header_name_hu: "Nume în maghiară (opțional)",
       materials_header_price: "Preț unitar (RON/kg)",
@@ -363,22 +363,20 @@ window.AppConfig = (function () {
         'Se încarcă lista de prețuri implicită în editor. Modificările nesalvate se pierd. Pentru salvarea efectivă trebuie apoi să apeși și butonul "Salvare pe GitHub". Continui?',
       reset_defaults_done:
         'Prețurile implicite au fost încărcate în editor — pentru salvare apasă butonul "Salvare pe GitHub".',
-      github_token_title: "Date de salvare GitHub",
-      github_token_label: "Token de acces personal GitHub",
-      remember_token_label: "Reține tokenul pe acest dispozitiv",
+      github_token_title: "Cheia de acces pentru salvare",
+      github_token_label: "Cheie de acces",
+      remember_token_label: "Reține cheia pe acest dispozitiv",
       token_hint_html:
-        'Tokenul trebuie creat o singură dată: GitHub.com → poza de profil → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token. Repository access: doar repo-ul <code>ecogdmsrl.github.io</code>. Permissions → Contents: <strong>Read and write</strong>. Restul rămân "No access". Detalii în README.',
+        "Intra codul mai sus , iar dacă bifezi „Reține cheia pe acest dispozitiv”, data viitoare nu va trebui să o mai introduci pe acest telefon/calculator.",
       save_button_github: "Salvare pe GitHub",
       status_min_one: "Adaugă cel puțin un material valid (nume + preț).",
-      status_need_token:
-        "Pentru salvare, introdu tokenul de acces GitHub mai jos.",
+      status_need_token: "Pentru salvare, introdu mai jos cheia de acces.",
       status_saving: "Se salvează…",
       status_saved:
         "Salvat. În câteva minute lista de prețuri se actualizează pe toate dispozitivele.",
       status_fetch_fail:
-        "Nu s-a putut accesa fișierul materials.json — se afișează prețurile implicite.",
-      status_refreshed:
-        "Cea mai recentă listă de prețuri a fost încărcată de pe GitHub.",
+        "Nu s-a putut accesa cea mai recentă listă de prețuri — deocamdată se afișează prețurile implicite.",
+      status_refreshed: "Cea mai recentă listă de prețuri a fost încărcată.",
 
       receipt_subtitle: "Chitanță de recepție",
       receipt_disclaimer:
