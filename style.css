@@ -738,4 +738,18 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
     align-items: flex-start;
   }
   .header-actions { width: 100%; justify-content: space-between; }
+
+  /* Kis képernyőn (telefon) az Anyag / Mérés típusa és a Tele/Üres
+     súly mezők egymás alá kerülnek, hogy ne csússzon össze a szöveg. */
+  .field {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .item-row-top {
+    align-items: stretch;
+  }
+  .item-row-top .remove-btn {
+    align-self: flex-end;
+    margin-left: auto;
+  }
 }
