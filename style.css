@@ -257,7 +257,7 @@ header h1 {
   letter-spacing: 0.03em;
 }
 
-select, .kg-input, .kg-loaded-input, .kg-empty-input {
+select, .kg-input, .kg-loaded-input, .kg-empty-input, .purchase-price-input, .purchase-qty-input {
   width: 100%;
   padding: 11px 10px;
   font-size: 16px;
@@ -267,13 +267,13 @@ select, .kg-input, .kg-loaded-input, .kg-empty-input {
   color: var(--text);
   transition: border-color .15s, box-shadow .15s;
 }
-select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
+select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .purchase-price-input:focus, .purchase-qty-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
-.kg-input, .kg-loaded-input, .kg-empty-input { text-align: left; }
+.kg-input, .kg-loaded-input, .kg-empty-input, .purchase-price-input, .purchase-qty-input { text-align: left; }
 
 .item-summary {
   padding-top: 12px;
@@ -325,12 +325,17 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   border-radius: 18px;
   padding: 22px 24px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 0;
+  box-shadow: var(--shadow-glow);
+}
+.total-main-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin: 18px 0;
-  box-shadow: var(--shadow-glow);
 }
 #total-card .label {
   font-size: 14px;
@@ -344,6 +349,20 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
+.total-breakdown {
+  font-size: 13px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.total-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  opacity: 0.92;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.total-breakdown-row:last-child { margin-bottom: 0; }
 .total-fondmediu-note {
   font-size: 12px;
   color: var(--muted);
@@ -513,6 +532,51 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   transition: border-color .15s, box-shadow .15s;
 }
 #vehicle-make:focus, #vehicle-plate:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
+  background: #fff;
+}
+
+/* ---------- Purchased goods (levonás az összegből) ---------- */
+.purchases-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+#purchases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+#purchases-list:empty { margin-bottom: 0; }
+.purchase-row .item-row { margin-bottom: 0; }
+.purchase-row .purchase-summary {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+.purchase-row .purchase-summary strong {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.purchase-name-input {
+  width: 100%;
+  padding: 11px 10px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fafcfb;
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+.purchase-name-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
@@ -724,6 +788,26 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 .receipt th { background: #f0f0f0; }
 .receipt td.num, .receipt th.num {
   text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.receipt .receipt-purchases-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #555;
+  margin: 0 0 8px;
+}
+.receipt .receipt-breakdown {
+  font-size: 12.5px;
+  color: #444;
+  margin-bottom: 8px;
+}
+.receipt .receipt-breakdown div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 2px;
   font-variant-numeric: tabular-nums;
 }
 .receipt .receipt-total {

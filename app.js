@@ -64,6 +64,12 @@
   const addRowBtn = document.getElementById("add-row-btn");
   const resetBtn = document.getElementById("reset-btn");
 
+  const purchasesList = document.getElementById("purchases-list");
+  const addPurchaseBtn = document.getElementById("add-purchase-btn");
+  const totalBreakdown = document.getElementById("total-breakdown");
+  const materialsTotalValueEl = document.getElementById("materials-total-value");
+  const purchasesTotalValueEl = document.getElementById("purchases-total-value");
+
   const vehicleMakeInput = document.getElementById("vehicle-make");
   const vehiclePlateInput = document.getElementById("vehicle-plate");
   const printBtn = document.getElementById("print-btn");
@@ -246,12 +252,90 @@
     recalcTotal();
   }
 
-  function recalcTotal() {
-    let total = 0;
-    itemsList.querySelectorAll(".item-card").forEach(function (card) {
-      total += parseFloat(card.dataset.subtotal || "0");
+  function addPurchaseRow() {
+    const row = document.createElement("div");
+    row.className = "item-card purchase-row";
+
+    row.innerHTML =
+      '<div class="item-row">' +
+      '<div class="field">' +
+      '<label data-i18n="purchase_name_label">Termék</label>' +
+      '<input type="text" class="purchase-name-input" data-i18n-placeholder="purchase_name_placeholder" placeholder="pl. akkumulátor">' +
+      "</div>" +
+      '<div class="field">' +
+      '<label data-i18n="purchase_price_label">Egységár (RON/db)</label>' +
+      '<input type="number" class="purchase-price-input" inputmode="decimal" min="0" step="0.01" placeholder="0">' +
+      "</div>" +
+      '<div class="field">' +
+      '<label data-i18n="purchase_qty_label">Darabszám</label>' +
+      '<input type="number" class="purchase-qty-input" inputmode="numeric" min="0" step="1" placeholder="0">' +
+      "</div>" +
+      '<button type="button" class="remove-btn remove-purchase-btn" data-i18n-title="remove_item_title" title="Tétel törlése">&times;</button>' +
+      "</div>" +
+      '<div class="item-row purchase-summary">' +
+      '<span><span data-i18n="item_subtotal_label">Részösszeg:</span> <strong class="purchase-subtotal-value">0,00 RON</strong></span>' +
+      "</div>";
+
+    purchasesList.appendChild(row);
+
+    const nameInput = row.querySelector(".purchase-name-input");
+    const priceInput = row.querySelector(".purchase-price-input");
+    const qtyInput = row.querySelector(".purchase-qty-input");
+    const removeBtn = row.querySelector(".remove-purchase-btn");
+
+    nameInput.addEventListener("input", function () {
+      updatePurchaseRow(row);
     });
-    totalValueEl.textContent = AppConfig.formatRON(total);
+    priceInput.addEventListener("input", function () {
+      updatePurchaseRow(row);
+    });
+    qtyInput.addEventListener("input", function () {
+      updatePurchaseRow(row);
+    });
+    removeBtn.addEventListener("click", function () {
+      row.remove();
+      recalcTotal();
+    });
+
+    updatePurchaseRow(row);
+    AppConfig.applyTranslations();
+  }
+
+  function updatePurchaseRow(row) {
+    const price = parseFloat(row.querySelector(".purchase-price-input").value);
+    const qty = parseFloat(row.querySelector(".purchase-qty-input").value);
+    const validPrice = isFinite(price) && price > 0 ? price : 0;
+    const validQty = isFinite(qty) && qty > 0 ? qty : 0;
+    const subtotal = validPrice * validQty;
+
+    row.dataset.subtotal = String(subtotal);
+    row.querySelector(".purchase-subtotal-value").textContent = AppConfig.formatRON(subtotal);
+
+    recalcTotal();
+  }
+
+  function recalcTotal() {
+    let materialsTotal = 0;
+    itemsList.querySelectorAll(".item-card").forEach(function (card) {
+      materialsTotal += parseFloat(card.dataset.subtotal || "0");
+    });
+
+    let purchasesTotal = 0;
+    purchasesList.querySelectorAll(".purchase-row").forEach(function (row) {
+      purchasesTotal += parseFloat(row.dataset.subtotal || "0");
+    });
+
+    const netTotal = materialsTotal - purchasesTotal;
+
+    if (purchasesTotal > 0) {
+      totalBreakdown.style.display = "block";
+      materialsTotalValueEl.textContent = AppConfig.formatRON(materialsTotal);
+      purchasesTotalValueEl.textContent = "-" + AppConfig.formatRON(purchasesTotal);
+    } else {
+      totalBreakdown.style.display = "none";
+    }
+
+    totalValueEl.textContent = AppConfig.formatRON(netTotal);
   }
 
   function refreshEmptyHint() {
@@ -260,12 +344,15 @@
 
   function resetAll() {
     itemsList.innerHTML = "";
+    purchasesList.innerHTML = "";
     refreshEmptyHint();
+    addPurchaseRow();
     recalcTotal();
     addItemRow();
   }
 
   addRowBtn.addEventListener("click", addItemRow);
+  addPurchaseBtn.addEventListener("click", addPurchaseRow);
   resetBtn.addEventListener("click", function () {
     if (confirm(t("reset_confirm"))) {
       resetAll();
@@ -328,6 +415,30 @@
     return items;
   }
 
+  function collectPurchasesForPrint() {
+    const rows = purchasesList.querySelectorAll(".purchase-row");
+    const purchases = [];
+
+    rows.forEach(function (row) {
+      const name = row.querySelector(".purchase-name-input").value.trim();
+      const price = parseFloat(row.querySelector(".purchase-price-input").value);
+      const qty = parseFloat(row.querySelector(".purchase-qty-input").value);
+      const validPrice = isFinite(price) && price > 0 ? price : 0;
+      const validQty = isFinite(qty) && qty > 0 ? qty : 0;
+
+      if (name === "" || validPrice <= 0 || validQty <= 0) return;
+
+      purchases.push({
+        name: name,
+        price: validPrice,
+        qty: validQty,
+        subtotal: validPrice * validQty,
+      });
+    });
+
+    return purchases;
+  }
+
   function generateReceiptId() {
     const now = new Date();
     const pad = function (n) {
@@ -341,7 +452,7 @@
     return "ATV-" + datePart + "-" + timePart + "-" + rand;
   }
 
-  function buildReceiptHTML(items, total) {
+  function buildReceiptHTML(items, materialsTotal, purchases, purchasesTotal, netTotal) {
     const make = vehicleMakeInput.value.trim();
     const plate = vehiclePlateInput.value.trim();
     const dateStr = new Date().toLocaleString("ro-RO");
@@ -371,6 +482,67 @@
         "</td>" +
         "</tr>";
     });
+
+    let purchaseRows = "";
+    purchases.forEach(function (p, idx) {
+      purchaseRows +=
+        "<tr>" +
+        "<td>" +
+        (idx + 1) +
+        "</td>" +
+        "<td>" +
+        escapeHtml(p.name) +
+        "</td>" +
+        '<td class="num">' +
+        AppConfig.formatRON(p.price) +
+        "</td>" +
+        '<td class="num">' +
+        p.qty +
+        "</td>" +
+        '<td class="num">' +
+        AppConfig.formatRON(p.subtotal) +
+        "</td>" +
+        "</tr>";
+    });
+
+    const purchasesSectionHtml =
+      purchases.length === 0
+        ? ""
+        : '<div class="receipt-purchases-title">' +
+          escapeHtml(t("receipt_purchases_title")) +
+          "</div>" +
+          "<table>" +
+          "<thead><tr>" +
+          "<th>#</th><th>" +
+          escapeHtml(t("purchase_name_label")) +
+          '</th><th class="num">' +
+          escapeHtml(t("purchase_price_label")) +
+          '</th><th class="num">' +
+          escapeHtml(t("purchase_qty_label")) +
+          '</th><th class="num">' +
+          escapeHtml(t("receipt_col_sum")) +
+          "</th>" +
+          "</tr></thead>" +
+          "<tbody>" +
+          purchaseRows +
+          "</tbody>" +
+          "</table>";
+
+    const breakdownHtml =
+      purchasesTotal <= 0
+        ? ""
+        : '<div class="receipt-breakdown">' +
+          "<div>" +
+          escapeHtml(t("total_materials_label")) +
+          " " +
+          AppConfig.formatRON(materialsTotal) +
+          "</div>" +
+          "<div>" +
+          escapeHtml(t("total_purchases_label")) +
+          " -" +
+          AppConfig.formatRON(purchasesTotal) +
+          "</div>" +
+          "</div>";
 
     return (
       '<div class="receipt">' +
@@ -425,10 +597,12 @@
       rows +
       "</tbody>" +
       "</table>" +
+      purchasesSectionHtml +
+      breakdownHtml +
       '<div class="receipt-total">' +
       escapeHtml(t("receipt_total_label")) +
       " " +
-      AppConfig.formatRON(total) +
+      AppConfig.formatRON(netTotal) +
       "</div>" +
       '<div class="receipt-fondmediu-note">' +
       escapeHtml(t("receipt_fondmediu_note")) +
@@ -447,17 +621,25 @@
 
   printBtn.addEventListener("click", function () {
     const items = collectItemsForPrint();
-    if (items.length === 0) {
+    const purchases = collectPurchasesForPrint();
+    if (items.length === 0 && purchases.length === 0) {
       alert(t("print_empty_alert"));
       return;
     }
 
-    let total = 0;
+    let materialsTotal = 0;
     items.forEach(function (it) {
-      total += it.subtotal;
+      materialsTotal += it.subtotal;
     });
 
-    const receiptHtml = buildReceiptHTML(items, total);
+    let purchasesTotal = 0;
+    purchases.forEach(function (p) {
+      purchasesTotal += p.subtotal;
+    });
+
+    const netTotal = materialsTotal - purchasesTotal;
+
+    const receiptHtml = buildReceiptHTML(items, materialsTotal, purchases, purchasesTotal, netTotal);
 
     const measurer = document.createElement("div");
     measurer.style.position = "fixed";

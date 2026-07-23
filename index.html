@@ -64,9 +64,27 @@
     <div id="empty-hint" class="empty-hint" data-i18n="empty_hint">Nincs még tétel. Adj hozzá egyet lent.</div>
     <button id="add-row-btn" type="button" data-i18n="add_item_button">+ Új tétel</button>
 
+    <div class="purchases-card">
+      <p class="vehicle-card-title" data-i18n="purchases_section_title">Vásárolt termékek (levonás az összegből)</p>
+      <div id="purchases-list"></div>
+      <button id="add-purchase-btn" type="button" data-i18n="add_purchase_button">+ Új vásárolt termék</button>
+    </div>
+
     <div id="total-card">
-      <span class="label" data-i18n="total_label">Fizetendő összesen</span>
-      <span class="value" id="total-value">0,00 RON</span>
+      <div class="total-breakdown" id="total-breakdown" style="display:none">
+        <div class="total-breakdown-row">
+          <span data-i18n="total_materials_label">Anyagok összesen</span>
+          <span id="materials-total-value">0,00 RON</span>
+        </div>
+        <div class="total-breakdown-row">
+          <span data-i18n="total_purchases_label">Levonás (vásárolt termékek)</span>
+          <span id="purchases-total-value">-0,00 RON</span>
+        </div>
+      </div>
+      <div class="total-main-row">
+        <span class="label" data-i18n="total_label">Fizetendő összesen</span>
+        <span class="value" id="total-value">0,00 RON</span>
+      </div>
     </div>
     <div id="total-fondmediu-note" class="total-fondmediu-note" data-i18n="receipt_fondmediu_note">(az árban benne van a -10% fond mediu)</div>
 
