@@ -77,23 +77,26 @@
   function renderMaterials(materials) {
     materialsList.innerHTML = "";
     materials.forEach(function (mat) {
-      addMaterialRow(mat.name, mat.nameHu, mat.pricePerKg);
+      addMaterialRow(mat.name, mat.nameHu, mat.pricePerKg, mat.priceCleanPerKg);
     });
   }
 
-  function addMaterialRow(name, nameHu, price) {
+  function addMaterialRow(name, nameHu, price, priceClean) {
     const row = document.createElement("div");
     row.className = "material-row";
     row.innerHTML =
       '<input type="text" class="material-name-input" data-i18n-placeholder="materials_header_name" placeholder="Anyag megnevezése">' +
       '<input type="text" class="material-name-hu-input" data-i18n-placeholder="materials_header_name_hu" placeholder="Magyar név (opcionális)">' +
       '<input type="number" class="material-price-input" min="0" step="0.01" placeholder="0,00">' +
+      '<input type="number" class="material-price-clean-input" min="0" step="0.01" placeholder="–">' +
       '<button type="button" class="remove-material-btn" data-i18n-title="remove_item_title" title="Anyag törlése">&times;</button>';
 
     row.querySelector(".material-name-input").value = name || "";
     row.querySelector(".material-name-hu-input").value = nameHu || "";
     row.querySelector(".material-price-input").value =
       typeof price === "number" ? price : "";
+    row.querySelector(".material-price-clean-input").value =
+      typeof priceClean === "number" ? priceClean : "";
 
     row
       .querySelector(".remove-material-btn")
@@ -114,8 +117,14 @@
       const nameHu = row.querySelector(".material-name-hu-input").value.trim();
       const priceRaw = row.querySelector(".material-price-input").value;
       const price = parseFloat(priceRaw);
+      const priceCleanRaw = row.querySelector(".material-price-clean-input").value;
+      const priceClean = parseFloat(priceCleanRaw);
       if (name !== "" && isFinite(price) && price >= 0) {
-        materials.push({ name: name, nameHu: nameHu, pricePerKg: price });
+        const mat = { name: name, nameHu: nameHu, pricePerKg: price };
+        if (priceCleanRaw.trim() !== "" && isFinite(priceClean) && priceClean >= 0) {
+          mat.priceCleanPerKg = priceClean;
+        }
+        materials.push(mat);
       }
     });
     return materials;

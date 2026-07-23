@@ -402,7 +402,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 
 .materials-header-row, .material-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 110px 40px;
+  grid-template-columns: 1fr 1fr 100px 100px 40px;
   gap: 10px;
   align-items: center;
 }
@@ -423,7 +423,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 }
 .material-row:last-of-type { border-bottom: none; margin-bottom: 0; }
 
-.material-name-input, .material-name-hu-input, .material-price-input {
+.material-name-input, .material-name-hu-input, .material-price-input, .material-price-clean-input {
   width: 100%;
   padding: 11px 10px;
   font-size: 15px;
@@ -432,13 +432,13 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   background: #fafcfb;
   transition: border-color .15s, box-shadow .15s;
 }
-.material-name-input:focus, .material-name-hu-input:focus, .material-price-input:focus {
+.material-name-input:focus, .material-name-hu-input:focus, .material-price-input:focus, .material-price-clean-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
-.material-price-input { text-align: right; }
+.material-price-input, .material-price-clean-input { text-align: right; }
 
 .settings-actions {
   display: flex;
@@ -631,6 +631,41 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
     background: #fff;
   }
   @page { margin: 14mm; }
+
+  .receipt-copy {
+    page-break-inside: avoid;
+    break-inside: avoid-page;
+  }
+  /* Default (fallback) spacing: used when the two copies don't both fit
+     comfortably within half a printed page — they just stack naturally
+     and the second one flows onto a new page if needed. */
+  #print-area:not(.print-split-half) .receipt-copy + .receipt-copy {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px dashed #999;
+  }
+  /* When both copies fit on one page: force the page into two exact
+     halves (absolute mm height matching the @page margin above), so the
+     cut line always lands exactly at the vertical center of the sheet no
+     matter how short the content is. */
+  #print-area.print-split-half {
+    display: flex !important;
+    flex-direction: column;
+    height: 269mm; /* A4 (297mm) minus the 14mm top+bottom @page margin */
+  }
+  #print-area.print-split-half .receipt-copy {
+    flex: 0 0 134.5mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #print-area.print-split-half .receipt-copy:first-child {
+    border-bottom: 1px dashed #999;
+  }
+  #print-area.print-split-half .receipt {
+    width: 100%;
+  }
 }
 
 .receipt {
@@ -639,15 +674,6 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   max-width: 640px;
   margin: 0 auto;
   padding: 8px;
-}
-.receipt-copy {
-  page-break-inside: avoid;
-  break-inside: avoid-page;
-}
-.receipt-copy + .receipt-copy {
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px dashed #999;
 }
 .receipt-logo {
   display: flex;
@@ -747,9 +773,9 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
     align-items: center;
   }
   .material-name-input, .material-name-hu-input { flex: 1 1 100%; }
-  .material-price-input { flex: 1 1 auto; min-width: 90px; }
+  .material-price-input, .material-price-clean-input { flex: 1 1 auto; min-width: 90px; }
   .remove-material-btn { flex: 0 0 auto; }
-  .material-name-input, .material-name-hu-input, .material-price-input { padding: 10px 8px; font-size: 14px; }
+  .material-name-input, .material-name-hu-input, .material-price-input, .material-price-clean-input { padding: 10px 8px; font-size: 14px; }
   header {
     flex-direction: column;
     align-items: flex-start;

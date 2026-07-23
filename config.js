@@ -78,11 +78,19 @@ window.AppConfig = (function () {
         );
       })
       .map(function (m) {
-        return {
+        const clean = {
           name: m.name,
           nameHu: typeof m.nameHu === "string" ? m.nameHu : "",
           pricePerKg: m.pricePerKg,
         };
+        if (
+          typeof m.priceCleanPerKg === "number" &&
+          isFinite(m.priceCleanPerKg) &&
+          m.priceCleanPerKg >= 0
+        ) {
+          clean.priceCleanPerKg = m.priceCleanPerKg;
+        }
+        return clean;
       });
   }
 
@@ -96,6 +104,22 @@ window.AppConfig = (function () {
       return material.nameHu;
     }
     return material.name;
+  }
+
+  function materialHasCleanPrice(material) {
+    return (
+      !!material &&
+      typeof material.priceCleanPerKg === "number" &&
+      isFinite(material.priceCleanPerKg)
+    );
+  }
+
+  function getEffectivePrice(material, quality) {
+    if (!material) return 0;
+    if (quality === "clean" && materialHasCleanPrice(material)) {
+      return material.priceCleanPerKg;
+    }
+    return material.pricePerKg;
   }
 
   async function fetchMaterials() {
@@ -240,6 +264,9 @@ window.AppConfig = (function () {
       field_measure_type: "Mérés típusa",
       mode_scale_option: "Mérlegelés (kis mennyiség)",
       mode_vehicle_option: "Jármű mérés (nagy mennyiség)",
+      field_quality: "Minőség",
+      quality_standard_option: "Sima",
+      quality_clean_option: "Tiszta",
       remove_item_title: "Tétel törlése",
       field_weight_scale: "Súly (kg)",
       field_weight_loaded: "Tele súly (kg) – jármű + anyag",
@@ -265,6 +292,7 @@ window.AppConfig = (function () {
       materials_header_name: "Anyag megnevezése (RO)",
       materials_header_name_hu: "Magyar név (opcionális)",
       materials_header_price: "Egységár (RON/kg)",
+      materials_header_price_clean: "Tiszta ár (opcionális, RON/kg)",
       add_material_button: "+ Új anyag",
       refresh_button: "🔄 Legfrissebb betöltése",
       reset_defaults_button: "Alapértelmezett árak betöltése",
@@ -331,6 +359,9 @@ window.AppConfig = (function () {
       field_measure_type: "Tip de măsurare",
       mode_scale_option: "Cântărire (cantitate mică)",
       mode_vehicle_option: "Cântărire vehicul (cantitate mare)",
+      field_quality: "Calitate",
+      quality_standard_option: "Standard",
+      quality_clean_option: "Curat",
       remove_item_title: "Șterge articolul",
       field_weight_scale: "Greutate (kg)",
       field_weight_loaded: "Greutate încărcat (kg) – vehicul + material",
@@ -357,6 +388,7 @@ window.AppConfig = (function () {
       materials_header_name: "Denumire material (RO)",
       materials_header_name_hu: "Nume în maghiară (opțional)",
       materials_header_price: "Preț unitar (RON/kg)",
+      materials_header_price_clean: "Preț curat (opțional, RON/kg)",
       add_material_button: "+ Material nou",
       refresh_button: "🔄 Încarcă cel mai recent",
       reset_defaults_button: "Încarcă prețurile implicite",
@@ -379,7 +411,7 @@ window.AppConfig = (function () {
         "Nu s-a putut accesa cea mai recentă listă de prețuri — deocamdată se afișează prețurile implicite.",
       status_refreshed: "Cea mai recentă listă de prețuri a fost încărcată.",
 
-      receipt_subtitle: "Chitanță de recepție",
+      receipt_subtitle: "Nota de recepție și cantitate",
       receipt_disclaimer:
         "Aceasta NU este o chitanță oficială, este doar o dovadă internă, informativă, privind materialul recepționat și suma plătită. Pentru o factură sau un document oficial, solicitați documentul emis oficial de companie.",
       receipt_id_label: "Identificator:",
@@ -470,5 +502,7 @@ window.AppConfig = (function () {
     applyTranslations: applyTranslations,
     initLangSwitcher: initLangSwitcher,
     displayMaterialName: displayMaterialName,
+    materialHasCleanPrice: materialHasCleanPrice,
+    getEffectivePrice: getEffectivePrice,
   };
 })();

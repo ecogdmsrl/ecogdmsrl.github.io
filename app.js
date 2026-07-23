@@ -112,6 +112,13 @@
       '<option value="vehicle" data-i18n="mode_vehicle_option">Jármű mérés (nagy mennyiség)</option>' +
       "</select>" +
       "</div>" +
+      '<div class="field quality-field" style="display:none">' +
+      '<label data-i18n="field_quality">Minőség</label>' +
+      '<select class="quality-select">' +
+      '<option value="standard" data-i18n="quality_standard_option">Sima</option>' +
+      '<option value="clean" data-i18n="quality_clean_option">Tiszta</option>' +
+      "</select>" +
+      "</div>" +
       '<button type="button" class="remove-btn" data-i18n-title="remove_item_title" title="Tétel törlése">&times;</button>' +
       "</div>" +
       '<div class="item-row mode-scale-fields">' +
@@ -142,6 +149,7 @@
     buildMaterialOptions(select);
 
     const modeSelect = card.querySelector(".mode-select");
+    const qualitySelect = card.querySelector(".quality-select");
     const kgInput = card.querySelector(".kg-input");
     const kgLoadedInput = card.querySelector(".kg-loaded-input");
     const kgEmptyInput = card.querySelector(".kg-empty-input");
@@ -151,6 +159,9 @@
       updateItemCard(card);
     });
     modeSelect.addEventListener("change", function () {
+      updateItemCard(card);
+    });
+    qualitySelect.addEventListener("change", function () {
       updateItemCard(card);
     });
     kgInput.addEventListener("input", function () {
@@ -186,6 +197,12 @@
     return diff > 0 ? diff : 0;
   }
 
+  function getCardQuality(card, material) {
+    if (!AppConfig.materialHasCleanPrice(material)) return "standard";
+    const qualitySelect = card.querySelector(".quality-select");
+    return qualitySelect && qualitySelect.value === "clean" ? "clean" : "standard";
+  }
+
   function updateItemCard(card) {
     const select = card.querySelector(".material-select");
     const modeSelect = card.querySelector(".mode-select");
@@ -208,9 +225,16 @@
     const matIdx = parseInt(select.value, 10);
     const material = MATERIALS[matIdx];
 
+    const qualityField = card.querySelector(".quality-field");
+    const hasCleanPrice = AppConfig.materialHasCleanPrice(material);
+    qualityField.style.display = hasCleanPrice ? "flex" : "none";
+
+    const quality = getCardQuality(card, material);
+    const price = AppConfig.getEffectivePrice(material, quality);
+
     if (material) {
-      priceEl.textContent = AppConfig.formatRON(material.pricePerKg) + "/kg";
-      const subtotal = netKg * material.pricePerKg;
+      priceEl.textContent = AppConfig.formatRON(price) + "/kg";
+      const subtotal = netKg * price;
       subtotalEl.textContent = AppConfig.formatRON(subtotal);
       card.dataset.subtotal = String(subtotal);
     } else {
@@ -263,15 +287,24 @@
     cards.forEach(function (card) {
       const select = card.querySelector(".material-select");
       const selectedOption = select.options[select.selectedIndex];
-      const materialName = selectedOption ? selectedOption.textContent : "-";
+      let materialName = selectedOption ? selectedOption.textContent : "-";
 
       const mode = card.dataset.mode === "vehicle" ? "vehicle" : "scale";
       const netKg = computeNetKg(card, mode);
 
       const matIdx = parseInt(select.value, 10);
       const material = MATERIALS[matIdx];
-      const price = material ? material.pricePerKg : 0;
+      const quality = getCardQuality(card, material);
+      const price = AppConfig.getEffectivePrice(material, quality);
       const subtotal = netKg * price;
+
+      if (AppConfig.materialHasCleanPrice(material)) {
+        materialName +=
+          " – " +
+          (quality === "clean"
+            ? t("quality_clean_option")
+            : t("quality_standard_option"));
+      }
 
       let modeLabel;
       if (mode === "scale") {
@@ -433,6 +466,22 @@
     });
 
     const receiptHtml = buildReceiptHTML(items, total);
+
+    const measurer = document.createElement("div");
+    measurer.style.position = "fixed";
+    measurer.style.visibility = "hidden";
+    measurer.style.left = "-9999px";
+    measurer.style.top = "0";
+    measurer.style.width = "640px";
+    measurer.innerHTML = receiptHtml;
+    document.body.appendChild(measurer);
+    const copyHeightPx = measurer.offsetHeight;
+    document.body.removeChild(measurer);
+
+    const HALF_PAGE_PX = 1017 / 2;
+    const fitsAsHalfPage = copyHeightPx <= HALF_PAGE_PX * 0.92;
+
+    printArea.classList.toggle("print-split-half", fitsAsHalfPage);
     printArea.innerHTML =
       '<div class="receipt-copy">' +
       receiptHtml +
