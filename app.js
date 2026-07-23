@@ -848,7 +848,6 @@
         "</td>" +
         "</tr>";
     });
-    // pad up to at least 6 blank rows, matching the paper template
     for (let i = items.length; i < 6; i++) {
       rows += "<tr><td>&nbsp;</td><td>kg</td><td></td><td></td><td></td></tr>";
     }
