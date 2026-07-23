@@ -1,18 +1,26 @@
 window.AppConfig = (function () {
   "use strict";
 
-  const ENCODED_PASSWORD = "bWVqbXMyMDE1";
+  const PASSWORD_HASH =
+    "1391959f1ca27567f2fea4c342c26668235ba95832c97a53fee7fd8dd6b52b63";
 
-  function decodePassword(encoded) {
-    try {
-      return atob(encoded);
-    } catch (e) {
-      return "";
-    }
+  async function sha256Hex(text) {
+    const bytes = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(digest))
+      .map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      })
+      .join("");
   }
 
-  function checkPassword(candidate) {
-    return candidate === decodePassword(ENCODED_PASSWORD);
+  async function checkPassword(candidate) {
+    try {
+      const hash = await sha256Hex(candidate);
+      return hash === PASSWORD_HASH;
+    } catch (e) {
+      return false;
+    }
   }
 
   const GITHUB_OWNER = "ecogdmsrl";

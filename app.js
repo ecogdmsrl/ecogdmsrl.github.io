@@ -30,7 +30,7 @@
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
-    if (!AppConfig.checkPassword(passwordInput.value)) {
+    if (!(await AppConfig.checkPassword(passwordInput.value))) {
       loginError.textContent = t("login_error");
       passwordInput.value = "";
       passwordInput.focus();
