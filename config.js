@@ -316,7 +316,7 @@ window.AppConfig = (function () {
         "Nem sikerült elérni a legfrissebb árlistát az internetről — egyelőre az alapértelmezett árak jelennek meg.",
       status_refreshed: "Legfrissebb árlista betöltve.",
 
-      receipt_subtitle: "Átvételi elismervény",
+      receipt_subtitle: "Mérlegelési és átvételi jegyzet",
       receipt_disclaimer:
         "Ez NEM hivatalos bizonylat, kizárólag tájékoztató jellegű, belső elismervény az átvett anyagról és a kifizetett összegről. Hivatalos számla vagy bizonylat igénylése esetén kérje a cég hivatalos kiállítású dokumentumát.",
       receipt_id_label: "Azonosító:",
