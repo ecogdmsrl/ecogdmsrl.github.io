@@ -84,11 +84,11 @@ window.AppConfig = (function () {
           pricePerKg: m.pricePerKg,
         };
         if (
-          typeof m.priceCleanPerKg === "number" &&
-          isFinite(m.priceCleanPerKg) &&
-          m.priceCleanPerKg >= 0
+          typeof m.priceExtraPerKg === "number" &&
+          isFinite(m.priceExtraPerKg) &&
+          m.priceExtraPerKg >= 0
         ) {
-          clean.priceCleanPerKg = m.priceCleanPerKg;
+          clean.priceExtraPerKg = m.priceExtraPerKg;
         }
         return clean;
       });
@@ -106,18 +106,18 @@ window.AppConfig = (function () {
     return material.name;
   }
 
-  function materialHasCleanPrice(material) {
+  function materialHasExtraPrice(material) {
     return (
       !!material &&
-      typeof material.priceCleanPerKg === "number" &&
-      isFinite(material.priceCleanPerKg)
+      typeof material.priceExtraPerKg === "number" &&
+      isFinite(material.priceExtraPerKg)
     );
   }
 
-  function getEffectivePrice(material, quality) {
+  function getEffectivePrice(material, priceType) {
     if (!material) return 0;
-    if (quality === "clean" && materialHasCleanPrice(material)) {
-      return material.priceCleanPerKg;
+    if (priceType === "extra" && materialHasExtraPrice(material)) {
+      return material.priceExtraPerKg;
     }
     return material.pricePerKg;
   }
@@ -264,9 +264,9 @@ window.AppConfig = (function () {
       field_measure_type: "Mérés típusa",
       mode_scale_option: "Mérlegelés (kis mennyiség)",
       mode_vehicle_option: "Jármű mérés (nagy mennyiség)",
-      field_quality: "Minőség",
-      quality_standard_option: "Sima",
-      quality_clean_option: "Tiszta",
+      field_price_type: "Ár típusa",
+      price_standard_option: "Standard",
+      price_extra_option: "Extra",
       remove_item_title: "Tétel törlése",
       field_weight_scale: "Súly (kg)",
       field_weight_loaded: "Tele súly (kg) – jármű + anyag",
@@ -292,7 +292,7 @@ window.AppConfig = (function () {
       materials_header_name: "Anyag megnevezése (RO)",
       materials_header_name_hu: "Magyar név (opcionális)",
       materials_header_price: "Egységár (RON/kg)",
-      materials_header_price_clean: "Tiszta ár (opcionális, RON/kg)",
+      materials_header_price_clean: "Extra ár (opcionális, RON/kg)",
       add_material_button: "+ Új anyag",
       refresh_button: "🔄 Legfrissebb betöltése",
       reset_defaults_button: "Alapértelmezett árak betöltése",
@@ -359,9 +359,9 @@ window.AppConfig = (function () {
       field_measure_type: "Tip de măsurare",
       mode_scale_option: "Cântărire (cantitate mică)",
       mode_vehicle_option: "Cântărire vehicul (cantitate mare)",
-      field_quality: "Calitate",
-      quality_standard_option: "Standard",
-      quality_clean_option: "Curat",
+      field_price_type: "Tip de preț",
+      price_standard_option: "Standard",
+      price_extra_option: "Extra",
       remove_item_title: "Șterge articolul",
       field_weight_scale: "Greutate (kg)",
       field_weight_loaded: "Greutate încărcat (kg) – vehicul + material",
@@ -388,7 +388,7 @@ window.AppConfig = (function () {
       materials_header_name: "Denumire material (RO)",
       materials_header_name_hu: "Nume în maghiară (opțional)",
       materials_header_price: "Preț unitar (RON/kg)",
-      materials_header_price_clean: "Preț curat (opțional, RON/kg)",
+      materials_header_price_clean: "Preț extra (opțional, RON/kg)",
       add_material_button: "+ Material nou",
       refresh_button: "🔄 Încarcă cel mai recent",
       reset_defaults_button: "Încarcă prețurile implicite",
@@ -502,7 +502,7 @@ window.AppConfig = (function () {
     applyTranslations: applyTranslations,
     initLangSwitcher: initLangSwitcher,
     displayMaterialName: displayMaterialName,
-    materialHasCleanPrice: materialHasCleanPrice,
+    materialHasExtraPrice: materialHasExtraPrice,
     getEffectivePrice: getEffectivePrice,
   };
 })();

@@ -423,7 +423,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
 }
 .material-row:last-of-type { border-bottom: none; margin-bottom: 0; }
 
-.material-name-input, .material-name-hu-input, .material-price-input, .material-price-clean-input {
+.material-name-input, .material-name-hu-input, .material-price-input, .material-price-extra-input {
   width: 100%;
   padding: 11px 10px;
   font-size: 15px;
@@ -432,13 +432,13 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   background: #fafcfb;
   transition: border-color .15s, box-shadow .15s;
 }
-.material-name-input:focus, .material-name-hu-input:focus, .material-price-input:focus, .material-price-clean-input:focus {
+.material-name-input:focus, .material-name-hu-input:focus, .material-price-input:focus, .material-price-extra-input:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
-.material-price-input, .material-price-clean-input { text-align: right; }
+.material-price-input, .material-price-extra-input { text-align: right; }
 
 .settings-actions {
   display: flex;
@@ -773,9 +773,9 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
     align-items: center;
   }
   .material-name-input, .material-name-hu-input { flex: 1 1 100%; }
-  .material-price-input, .material-price-clean-input { flex: 1 1 auto; min-width: 90px; }
+  .material-price-input, .material-price-extra-input { flex: 1 1 auto; min-width: 90px; }
   .remove-material-btn { flex: 0 0 auto; }
-  .material-name-input, .material-name-hu-input, .material-price-input, .material-price-clean-input { padding: 10px 8px; font-size: 14px; }
+  .material-name-input, .material-name-hu-input, .material-price-input, .material-price-extra-input { padding: 10px 8px; font-size: 14px; }
   header {
     flex-direction: column;
     align-items: flex-start;

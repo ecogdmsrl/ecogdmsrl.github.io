@@ -112,11 +112,11 @@
       '<option value="vehicle" data-i18n="mode_vehicle_option">Jármű mérés (nagy mennyiség)</option>' +
       "</select>" +
       "</div>" +
-      '<div class="field quality-field" style="display:none">' +
-      '<label data-i18n="field_quality">Minőség</label>' +
-      '<select class="quality-select">' +
-      '<option value="standard" data-i18n="quality_standard_option">Sima</option>' +
-      '<option value="clean" data-i18n="quality_clean_option">Tiszta</option>' +
+      '<div class="field price-type-field" style="display:none">' +
+      '<label data-i18n="field_price_type">Ár típusa</label>' +
+      '<select class="price-type-select">' +
+      '<option value="standard" data-i18n="price_standard_option">Standard</option>' +
+      '<option value="extra" data-i18n="price_extra_option">Extra</option>' +
       "</select>" +
       "</div>" +
       '<button type="button" class="remove-btn" data-i18n-title="remove_item_title" title="Tétel törlése">&times;</button>' +
@@ -149,7 +149,7 @@
     buildMaterialOptions(select);
 
     const modeSelect = card.querySelector(".mode-select");
-    const qualitySelect = card.querySelector(".quality-select");
+    const priceTypeSelect = card.querySelector(".price-type-select");
     const kgInput = card.querySelector(".kg-input");
     const kgLoadedInput = card.querySelector(".kg-loaded-input");
     const kgEmptyInput = card.querySelector(".kg-empty-input");
@@ -161,7 +161,7 @@
     modeSelect.addEventListener("change", function () {
       updateItemCard(card);
     });
-    qualitySelect.addEventListener("change", function () {
+    priceTypeSelect.addEventListener("change", function () {
       updateItemCard(card);
     });
     kgInput.addEventListener("input", function () {
@@ -197,10 +197,10 @@
     return diff > 0 ? diff : 0;
   }
 
-  function getCardQuality(card, material) {
-    if (!AppConfig.materialHasCleanPrice(material)) return "standard";
-    const qualitySelect = card.querySelector(".quality-select");
-    return qualitySelect && qualitySelect.value === "clean" ? "clean" : "standard";
+  function getCardPriceType(card, material) {
+    if (!AppConfig.materialHasExtraPrice(material)) return "standard";
+    const priceTypeSelect = card.querySelector(".price-type-select");
+    return priceTypeSelect && priceTypeSelect.value === "extra" ? "extra" : "standard";
   }
 
   function updateItemCard(card) {
@@ -225,12 +225,12 @@
     const matIdx = parseInt(select.value, 10);
     const material = MATERIALS[matIdx];
 
-    const qualityField = card.querySelector(".quality-field");
-    const hasCleanPrice = AppConfig.materialHasCleanPrice(material);
-    qualityField.style.display = hasCleanPrice ? "flex" : "none";
+    const priceTypeField = card.querySelector(".price-type-field");
+    const hasExtraPrice = AppConfig.materialHasExtraPrice(material);
+    priceTypeField.style.display = hasExtraPrice ? "flex" : "none";
 
-    const quality = getCardQuality(card, material);
-    const price = AppConfig.getEffectivePrice(material, quality);
+    const priceType = getCardPriceType(card, material);
+    const price = AppConfig.getEffectivePrice(material, priceType);
 
     if (material) {
       priceEl.textContent = AppConfig.formatRON(price) + "/kg";
@@ -287,24 +287,16 @@
     cards.forEach(function (card) {
       const select = card.querySelector(".material-select");
       const selectedOption = select.options[select.selectedIndex];
-      let materialName = selectedOption ? selectedOption.textContent : "-";
+      const materialName = selectedOption ? selectedOption.textContent : "-";
 
       const mode = card.dataset.mode === "vehicle" ? "vehicle" : "scale";
       const netKg = computeNetKg(card, mode);
 
       const matIdx = parseInt(select.value, 10);
       const material = MATERIALS[matIdx];
-      const quality = getCardQuality(card, material);
-      const price = AppConfig.getEffectivePrice(material, quality);
+      const priceType = getCardPriceType(card, material);
+      const price = AppConfig.getEffectivePrice(material, priceType);
       const subtotal = netKg * price;
-
-      if (AppConfig.materialHasCleanPrice(material)) {
-        materialName +=
-          " – " +
-          (quality === "clean"
-            ? t("quality_clean_option")
-            : t("quality_standard_option"));
-      }
 
       let modeLabel;
       if (mode === "scale") {
