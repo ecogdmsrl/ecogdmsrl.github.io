@@ -59,6 +59,58 @@
           <span id="person-cnp-error" class="field-error" data-i18n="person_cnp_error">A CNP-nek pontosan 13 számjegyből kell állnia.</span>
         </div>
       </div>
+      <div class="item-row">
+        <div class="field">
+          <label data-i18n="person_locality_label">Település</label>
+          <input type="text" id="person-locality" data-i18n-placeholder="person_locality_placeholder" placeholder="pl. Csíkszereda">
+        </div>
+        <div class="field">
+          <label data-i18n="person_street_label">Utca</label>
+          <input type="text" id="person-street" data-i18n-placeholder="person_street_placeholder" placeholder="pl. Fő utca">
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="field">
+          <label data-i18n="person_nr_label">Házszám</label>
+          <input type="text" id="person-nr" data-i18n-placeholder="person_nr_placeholder" placeholder="pl. 12">
+        </div>
+        <div class="field">
+          <label data-i18n="person_bloc_label">Tömbház (opcionális)</label>
+          <input type="text" id="person-bloc" data-i18n-placeholder="person_bloc_placeholder" placeholder="pl. A2">
+        </div>
+        <div class="field">
+          <label data-i18n="person_scara_label">Lépcsőház (opcionális)</label>
+          <input type="text" id="person-scara" data-i18n-placeholder="person_scara_placeholder" placeholder="pl. 1">
+        </div>
+        <div class="field">
+          <label data-i18n="person_ap_label">Lakás (opcionális)</label>
+          <input type="text" id="person-ap" data-i18n-placeholder="person_ap_placeholder" placeholder="pl. 5">
+        </div>
+      </div>
+      <div class="item-row">
+        <div class="field">
+          <label data-i18n="person_id_label">Igazolvány sorozat és szám</label>
+          <input type="text" id="person-id" data-i18n-placeholder="person_id_placeholder" placeholder="pl. HR 123456">
+        </div>
+        <div class="field">
+          <label data-i18n="person_issued_by_label">Kiállító hatóság (SPCLEP)</label>
+          <input type="text" id="person-issued-by" data-i18n-placeholder="person_issued_by_placeholder" placeholder="pl. Miercurea Ciuc">
+        </div>
+      </div>
+    </div>
+
+    <div class="vehicle-card">
+      <p class="vehicle-card-title" data-i18n="declaration_card_title">Nyilatkozat az anyag eredetéről</p>
+      <div class="declaration-options">
+        <label class="declaration-option">
+          <input type="radio" name="declaration-source" id="declaration-own" value="a" checked>
+          <span data-i18n="declaration_option_a">a) saját háztartásból</span>
+        </label>
+        <label class="declaration-option">
+          <input type="radio" name="declaration-source" id="declaration-other" value="b">
+          <span data-i18n="declaration_option_b">b) egyéb forrásból</span>
+        </label>
+      </div>
     </div>
 
     <div class="vehicle-card">
@@ -104,6 +156,7 @@
     <div id="total-fondmediu-note" class="total-fondmediu-note" data-i18n="receipt_fondmediu_note">(az árban benne van a -10% fond mediu)</div>
 
     <button id="print-btn" type="button" data-i18n="print_button">🖨️ Elismervény nyomtatása (nem hivatalos)</button>
+    <button id="official-print-btn" type="button" data-i18n="official_print_button">📋 Hivatalos nyomtatvány (Adeverință)</button>
     <button id="reset-btn" type="button" data-i18n="reset_button">Új kliens (mindent töröl)</button>
   </div>
 

@@ -73,9 +73,19 @@
   const personNameInput = document.getElementById("person-name");
   const personCnpInput = document.getElementById("person-cnp");
   const personCnpError = document.getElementById("person-cnp-error");
+  const personLocalityInput = document.getElementById("person-locality");
+  const personStreetInput = document.getElementById("person-street");
+  const personNrInput = document.getElementById("person-nr");
+  const personBlocInput = document.getElementById("person-bloc");
+  const personScaraInput = document.getElementById("person-scara");
+  const personApInput = document.getElementById("person-ap");
+  const personIdInput = document.getElementById("person-id");
+  const personIssuedByInput = document.getElementById("person-issued-by");
+  const declarationOwnRadio = document.getElementById("declaration-own");
   const vehicleMakeInput = document.getElementById("vehicle-make");
   const vehiclePlateInput = document.getElementById("vehicle-plate");
   const printBtn = document.getElementById("print-btn");
+  const officialPrintBtn = document.getElementById("official-print-btn");
   const printArea = document.getElementById("print-area");
 
   function validatePersonCnp() {
@@ -372,6 +382,15 @@
       personNameInput.value = "";
       personCnpInput.value = "";
       validatePersonCnp();
+      personLocalityInput.value = "";
+      personStreetInput.value = "";
+      personNrInput.value = "";
+      personBlocInput.value = "";
+      personScaraInput.value = "";
+      personApInput.value = "";
+      personIdInput.value = "";
+      personIssuedByInput.value = "";
+      declarationOwnRadio.checked = true;
       vehicleMakeInput.value = "";
       vehiclePlateInput.value = "";
     }
@@ -646,6 +665,268 @@
       "</div>"
     );
   }
+
+  // ---------- Romanian number-to-words (for the official "Adeverință" form) ----------
+
+  var RO_UNITS = ["zero", "unu", "doi", "trei", "patru", "cinci", "șase", "șapte", "opt", "nouă"];
+  var RO_TEENS = [
+    "zece",
+    "unsprezece",
+    "doisprezece",
+    "treisprezece",
+    "paisprezece",
+    "cincisprezece",
+    "șaisprezece",
+    "șaptesprezece",
+    "optsprezece",
+    "nouăsprezece",
+  ];
+  var RO_TENS = ["", "", "douăzeci", "treizeci", "patruzeci", "cincizeci", "șaizeci", "șaptezeci", "optzeci", "nouăzeci"];
+
+  function roUnitWord(x, fem) {
+    if (fem && x === 1) return "una";
+    if (fem && x === 2) return "două";
+    return RO_UNITS[x];
+  }
+  function roUnder100(x, fem) {
+    if (x < 10) return roUnitWord(x, fem);
+    if (x < 20) return RO_TEENS[x - 10];
+    var t = Math.floor(x / 10),
+      u = x % 10;
+    if (u === 0) return RO_TENS[t];
+    return RO_TENS[t] + " și " + roUnitWord(u, fem);
+  }
+  function roUnder1000(x, fem) {
+    if (x < 100) return roUnder100(x, fem);
+    var h = Math.floor(x / 100),
+      rest = x % 100;
+    var hw = h === 1 ? "o sută" : h === 2 ? "două sute" : RO_UNITS[h] + " sute";
+    if (rest === 0) return hw;
+    return hw + " " + roUnder100(rest, fem);
+  }
+  function numberToWordsRO(n) {
+    n = Math.floor(n);
+    if (n === 0) return "zero";
+    if (n < 1000) return roUnder1000(n, false);
+    var th = Math.floor(n / 1000),
+      rest = n % 1000;
+    var thw;
+    if (th === 1) thw = "o mie";
+    else thw = roUnder1000(th, true) + (th < 20 ? " mii" : " de mii");
+    if (rest === 0) return thw;
+    return thw + " " + roUnder1000(rest, false);
+  }
+  function amountToWordsLei(amount) {
+    var lei = Math.floor(amount + 1e-9);
+    var bani = Math.round((amount - lei) * 100);
+    if (bani === 100) {
+      lei += 1;
+      bani = 0;
+    }
+    var leiWords;
+    if (lei === 0) leiWords = "zero lei";
+    else if (lei === 1) leiWords = "un leu";
+    else if (lei < 20) leiWords = numberToWordsRO(lei) + " lei";
+    else leiWords = numberToWordsRO(lei) + " de lei";
+
+    if (bani === 0) return leiWords;
+
+    var baniWords;
+    if (bani === 1) baniWords = "un ban";
+    else if (bani < 20) baniWords = numberToWordsRO(bani) + " bani";
+    else baniWords = numberToWordsRO(bani) + " de bani";
+
+    return leiWords + " și " + baniWords;
+  }
+
+  // ---------- Official "Adeverință" form (always Romanian, regardless of UI language) ----------
+
+  function collectItemsForOfficialForm() {
+    const cards = itemsList.querySelectorAll(".item-card");
+    const items = [];
+
+    cards.forEach(function (card) {
+      const select = card.querySelector(".material-select");
+      const matIdx = parseInt(select.value, 10);
+      const material = MATERIALS[matIdx];
+      if (!material) return;
+
+      const mode = card.dataset.mode === "vehicle" ? "vehicle" : "scale";
+      const netKg = computeNetKg(card, mode);
+      const priceType = getCardPriceType(card, material);
+      const price = AppConfig.getEffectivePrice(material, priceType);
+
+      items.push({
+        name: material.name,
+        netKg: netKg,
+        price: price,
+        subtotal: netKg * price,
+      });
+    });
+
+    return items;
+  }
+
+  function buildOfficialFormHTML(items, materialsTotal) {
+    const receiptId = generateReceiptId();
+    const dateStr = new Date().toLocaleDateString("ro-RO");
+
+    const personName = personNameInput.value.trim();
+    const personCnp = personCnpInput.value.trim();
+    const locality = personLocalityInput.value.trim();
+    const street = personStreetInput.value.trim();
+    const nr = personNrInput.value.trim();
+    const bloc = personBlocInput.value.trim();
+    const scara = personScaraInput.value.trim();
+    const ap = personApInput.value.trim();
+    const idSeries = personIdInput.value.trim();
+    const issuedBy = personIssuedByInput.value.trim();
+    const transportPlate = vehiclePlateInput.value.trim();
+    const sourceIsOwn = declarationOwnRadio.checked;
+
+    const taxAmount = materialsTotal * 0.1;
+    const fondMediuAmount = materialsTotal * 0.02;
+    const total = materialsTotal - taxAmount - fondMediuAmount;
+
+    let rows = "";
+    items.forEach(function (it) {
+      rows +=
+        "<tr>" +
+        "<td>" +
+        escapeHtml(it.name) +
+        "</td>" +
+        "<td>kg</td>" +
+        '<td class="num">' +
+        AppConfig.formatKg(it.netKg) +
+        "</td>" +
+        '<td class="num">' +
+        AppConfig.formatRON(it.price) +
+        "</td>" +
+        '<td class="num">' +
+        AppConfig.formatRON(it.subtotal) +
+        "</td>" +
+        "</tr>";
+    });
+    // pad up to at least 6 blank rows, matching the paper template
+    for (let i = items.length; i < 6; i++) {
+      rows += "<tr><td>&nbsp;</td><td>kg</td><td></td><td></td><td></td></tr>";
+    }
+    rows +=
+      "<tr><td>reținere 10% impozit pers. fizice</td><td>kg</td><td></td><td></td>" +
+      '<td class="num">-' +
+      AppConfig.formatRON(taxAmount) +
+      "</td></tr>";
+    rows +=
+      "<tr><td>reținere 2% fond mediu</td><td></td><td></td><td></td>" +
+      '<td class="num">-' +
+      AppConfig.formatRON(fondMediuAmount) +
+      "</td></tr>";
+    rows +=
+      '<tr class="official-total-row"><td colspan="4"><strong>TOTAL:</strong></td>' +
+      '<td class="num"><strong>' +
+      AppConfig.formatRON(total) +
+      "</strong></td></tr>";
+
+    const addressParts =
+      "str. " +
+      (escapeHtml(street) || "-") +
+      " nr. " +
+      (escapeHtml(nr) || "-") +
+      ", bl. " +
+      (escapeHtml(bloc) || "-") +
+      ", sc. " +
+      (escapeHtml(scara) || "-") +
+      ", ap. " +
+      (escapeHtml(ap) || "-");
+
+    return (
+      '<div class="official-form">' +
+      '<div class="official-header">' +
+      '<div class="official-company">ECO GDM SRL<br>JOSENI Dr.Lazarea 29, jud. Harghita<br>CUI: 47490120</div>' +
+      '<div class="official-meta-box">' +
+      'Bon de cantar nr. <span class="official-dotted-blank"></span><br>' +
+      "Data: <strong>" +
+      dateStr +
+      "</strong><br>" +
+      'Tip deșeu/Kg: <span class="official-dotted-blank"></span>' +
+      "</div>" +
+      "</div>" +
+      '<h2 class="official-title">ADEVERINȚĂ<br><span>de primire și de plată nr. ' +
+      escapeHtml(receiptId) +
+      "</span></h2>" +
+      '<p class="official-body">' +
+      "S-au primit de la <strong>" +
+      (escapeHtml(personName) || "-") +
+      "</strong>, domiciliat în localitatea <strong>" +
+      (escapeHtml(locality) || "-") +
+      "</strong>, " +
+      addressParts +
+      ", legitimat cu buletinul/cartea de identitate <strong>" +
+      (escapeHtml(idSeries) || "-") +
+      "</strong>, eliberat/eliberată de SPCLEP <strong>" +
+      (escapeHtml(issuedBy) || "-") +
+      "</strong>, cod numeric personal <strong>" +
+      (escapeHtml(personCnp) || "-") +
+      "</strong>, mij. de transp. <strong>" +
+      (escapeHtml(transportPlate) || "-") +
+      "</strong> următoarele materiale reciclabile:" +
+      "</p>" +
+      "<table>" +
+      "<thead><tr>" +
+      "<th>Denumirea materialului și descrierea acestuia</th><th>U.M.</th>" +
+      '<th class="num">Cantitatea</th><th class="num">Prețul</th><th class="num">Valoarea</th>' +
+      "</tr></thead>" +
+      "<tbody>" +
+      rows +
+      "</tbody>" +
+      "</table>" +
+      '<div class="official-gestionar">Gestionar primitor,<br>Gál Mihály</div>' +
+      '<p class="official-paid-line">S-a achitat suma de <strong>' +
+      AppConfig.formatRON(total) +
+      "</strong> lei, adică (<strong>" +
+      amountToWordsLei(total) +
+      "</strong>)</p>" +
+      '<div class="official-declaration">' +
+      "<p><strong>Deținător,</strong></p>" +
+      "<p>1. Cunosc faptul că falsul în declarație constituie infracțiune și se pedepsește conform Codului penal.</p>" +
+      "<p>2. Declar pe propria răspundere că materialele pe care le predau provin din:</p>" +
+      "<p>" +
+      (sourceIsOwn ? "☒" : "☐") +
+      " a) gospodăria proprie<br>" +
+      (sourceIsOwn ? "☐" : "☒") +
+      " b) alte surse</p>" +
+      "</div>" +
+      '<div class="official-gdpr">' +
+      "<p><strong>Acord GDPR</strong></p>" +
+      "<p>Conform prevederilor legale continute de Regulamentul (UE)2016/679 privind protectia persoanelor fizice in ceea ce priveste prelucrarea datelor cu caracter personal si faptul ca societatea prelucreaza si stocheaza datele cu caracter personal am luat in cunostinta si sunt de acord (X) nu sunt de acord ( ) cu prelucrarea urmatoarelor date cu caracter personal: nume, prenume, CNP, adresa de domiciliu, serie si numar CI, nr. auto. Scopul prelucrarii: in vederea intocmirii documentelor contabile justificative, transmitere catre OTR-uri sau catre societati similare pe teritoriul Romaniei in baza unei temei legal (contract de prestari servicii), si catre Institutiile Statului Roman. Am fost informat despre exercitarea drepturilor de acces la integritate, stergere, opozitie, portabilitate, etc.</p>" +
+      "</div>" +
+      '<div class="official-signatures">' +
+      '<div class="official-sig-block official-casier">Casier,<div class="official-sig-line"></div></div>' +
+      '<div class="official-sig-block official-sig-right">' +
+      "De acord, semnătura (amprenta):<br>" +
+      'Primitor al sumei,<div class="official-sig-line"></div>' +
+      "</div>" +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  officialPrintBtn.addEventListener("click", function () {
+    const items = collectItemsForOfficialForm();
+    if (items.length === 0) {
+      alert(t("print_empty_alert"));
+      return;
+    }
+
+    let materialsTotal = 0;
+    items.forEach(function (it) {
+      materialsTotal += it.subtotal;
+    });
+
+    printArea.classList.remove("print-split-half");
+    printArea.innerHTML = buildOfficialFormHTML(items, materialsTotal);
+    window.print();
+  });
 
   printBtn.addEventListener("click", function () {
     const items = collectItemsForPrint();

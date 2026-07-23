@@ -512,7 +512,8 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   margin-bottom: 16px;
   box-shadow: var(--shadow-sm);
 }
-.vehicle-card .item-row { margin-bottom: 0; }
+.vehicle-card .item-row { margin-bottom: 16px; }
+.vehicle-card .item-row:last-child { margin-bottom: 0; }
 .vehicle-card-title {
   font-size: 12px;
   font-weight: 700;
@@ -521,7 +522,9 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   color: var(--muted);
   margin: 0 0 12px;
 }
-#vehicle-make, #vehicle-plate, #person-name, #person-cnp {
+#vehicle-make, #vehicle-plate, #person-name, #person-cnp,
+#person-locality, #person-street, #person-nr, #person-bloc,
+#person-scara, #person-ap, #person-id, #person-issued-by {
   width: 100%;
   padding: 11px 10px;
   font-size: 16px;
@@ -531,7 +534,9 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   color: var(--text);
   transition: border-color .15s, box-shadow .15s;
 }
-#vehicle-make:focus, #vehicle-plate:focus, #person-name:focus, #person-cnp:focus {
+#vehicle-make:focus, #vehicle-plate:focus, #person-name:focus, #person-cnp:focus,
+#person-locality:focus, #person-street:focus, #person-nr:focus, #person-bloc:focus,
+#person-scara:focus, #person-ap:focus, #person-id:focus, #person-issued-by:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
@@ -699,6 +704,44 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
 #print-btn:hover { background: #f2fbf5; }
 #print-btn:active { transform: translateY(1px); }
 
+#official-print-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid var(--accent-dark);
+  border-radius: 12px;
+  background: var(--accent-dark);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+  transition: background .15s, transform .1s;
+}
+#official-print-btn:hover { background: #0f5a30; }
+#official-print-btn:active { transform: translateY(1px); }
+
+/* ---------- Nyilatkozat (a/b forrás választó) ---------- */
+.declaration-options {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.declaration-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+}
+.declaration-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 /* ---------- Nyomtatható elismervény ---------- */
 .print-only { display: none; }
 
@@ -850,6 +893,102 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   padding-top: 4px;
   text-align: center;
   color: #333;
+}
+
+/* ---------- Hivatalos "Adeverință" nyomtatvány ---------- */
+.official-form {
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #111;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.official-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.official-company {
+  font-weight: 700;
+  font-size: 13px;
+}
+.official-meta-box {
+  font-size: 12.5px;
+  text-align: right;
+  white-space: nowrap;
+}
+.official-dotted-blank {
+  display: inline-block;
+  min-width: 160px;
+  border-bottom: 1px dotted #666;
+}
+.official-title {
+  text-align: center;
+  margin: 0 0 18px;
+  font-size: 18px;
+}
+.official-title span { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; }
+.official-body {
+  margin: 0 0 16px;
+  text-align: justify;
+}
+.official-form table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+}
+.official-form th, .official-form td {
+  border: 1px solid #999;
+  padding: 5px 7px;
+  text-align: left;
+}
+.official-form td.num, .official-form th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.official-gestionar {
+  text-align: right;
+  font-size: 12px;
+  margin: 10px 0 18px;
+}
+.official-paid-line {
+  margin: 0 0 20px;
+}
+.official-declaration p, .official-gdpr p {
+  margin: 0 0 8px;
+}
+.official-gdpr {
+  font-size: 10.5px;
+  color: #333;
+  margin: 16px 0;
+  text-align: justify;
+}
+.official-signatures {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-top: 30px;
+}
+.official-sig-block {
+  font-size: 12px;
+}
+.official-casier {
+  min-width: 300px;
+  margin-left: 40px;
+}
+.official-sig-right {
+  text-align: right;
+  max-width: 320px;
+}
+.official-sig-line {
+  margin-top: 26px;
+  border-top: 1px solid #333;
+  width: 100%;
 }
 
 /* ---------- Responsive: tablet & phone ---------- */
