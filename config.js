@@ -346,7 +346,8 @@ window.AppConfig = (function () {
       receipt_col_sum: "Összeg",
       receipt_purchases_title: "Vásárolt termékek",
       receipt_total_label: "Fizetett összeg:",
-      receipt_fondmediu_note: '(az árban benne van a -10% "fond mediu")',
+      receipt_fondmediu_note:
+        "(az összegből levonva 10% adó és 2% környezetvédelmi alap illeték)",
       receipt_sig_company: "Cég aláírása",
       receipt_sig_provider: "Anyagot beszolgáltató aláírása",
       receipt_mode_scale: "Mérlegelve",
@@ -458,7 +459,8 @@ window.AppConfig = (function () {
       receipt_col_sum: "Sumă",
       receipt_purchases_title: "Produse cumpărate",
       receipt_total_label: "Sumă plătită:",
-      receipt_fondmediu_note: "(prețul include deducerea de -10% fond mediu)",
+      receipt_fondmediu_note:
+        "(a fost reținut 10% impozit persoane fizice și 2% fond mediu)",
       receipt_sig_company: "Semnătura companiei",
       receipt_sig_provider: "Semnătura furnizorului de material",
       receipt_mode_scale: "Cântărit",
