@@ -432,7 +432,13 @@
       total += it.subtotal;
     });
 
-    printArea.innerHTML = buildReceiptHTML(items, total);
+    const receiptHtml = buildReceiptHTML(items, total);
+    printArea.innerHTML =
+      '<div class="receipt-copy">' +
+      receiptHtml +
+      '</div><div class="receipt-copy">' +
+      receiptHtml +
+      "</div>";
     window.print();
   });
 })();

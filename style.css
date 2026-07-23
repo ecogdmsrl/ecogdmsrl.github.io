@@ -273,7 +273,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
-.kg-input, .kg-loaded-input, .kg-empty-input { text-align: right; }
+.kg-input, .kg-loaded-input, .kg-empty-input { text-align: left; }
 
 .item-summary {
   padding-top: 12px;
@@ -639,6 +639,15 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus {
   max-width: 640px;
   margin: 0 auto;
   padding: 8px;
+}
+.receipt-copy {
+  page-break-inside: avoid;
+  break-inside: avoid-page;
+}
+.receipt-copy + .receipt-copy {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px dashed #999;
 }
 .receipt-logo {
   display: flex;
