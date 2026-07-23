@@ -267,6 +267,11 @@ select, .kg-input, .kg-loaded-input, .kg-empty-input, .purchase-price-input, .pu
   color: var(--text);
   transition: border-color .15s, box-shadow .15s;
 }
+select {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .purchase-price-input:focus, .purchase-qty-input:focus {
   outline: none;
   border-color: var(--accent);
@@ -758,22 +763,15 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
     page-break-inside: avoid;
     break-inside: avoid-page;
   }
-  /* Default (fallback) spacing: used when the two copies don't both fit
-     comfortably within half a printed page — they just stack naturally
-     and the second one flows onto a new page if needed. */
   #print-area:not(.print-split-half) .receipt-copy + .receipt-copy {
     margin-top: 22px;
     padding-top: 22px;
     border-top: 1px dashed #999;
   }
-  /* When both copies fit on one page: force the page into two exact
-     halves (absolute mm height matching the @page margin above), so the
-     cut line always lands exactly at the vertical center of the sheet no
-     matter how short the content is. */
   #print-area.print-split-half {
     display: flex !important;
     flex-direction: column;
-    height: 269mm; /* A4 (297mm) minus the 14mm top+bottom @page margin */
+    height: 269mm;
   }
   #print-area.print-split-half .receipt-copy {
     flex: 0 0 134.5mm;
@@ -1000,6 +998,18 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   #app-screen, #settings-screen { padding: 16px 12px 32px; }
   header h1 { font-size: 18px; }
   .header-icon { width: 36px; height: 36px; font-size: 17px; }
+
+  .field {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .item-row-top {
+    align-items: stretch;
+  }
+  .item-row-top .remove-btn {
+    align-self: flex-end;
+    margin-left: auto;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1023,18 +1033,4 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
     align-items: flex-start;
   }
   .header-actions { width: 100%; justify-content: space-between; }
-
-  /* Kis képernyőn (telefon) az Anyag / Mérés típusa és a Tele/Üres
-     súly mezők egymás alá kerülnek, hogy ne csússzon össze a szöveg. */
-  .field {
-    flex: 1 1 100%;
-    min-width: 0;
-  }
-  .item-row-top {
-    align-items: stretch;
-  }
-  .item-row-top .remove-btn {
-    align-self: flex-end;
-    margin-left: auto;
-  }
 }
