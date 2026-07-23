@@ -67,8 +67,12 @@
   const purchasesList = document.getElementById("purchases-list");
   const addPurchaseBtn = document.getElementById("add-purchase-btn");
   const totalBreakdown = document.getElementById("total-breakdown");
-  const materialsTotalValueEl = document.getElementById("materials-total-value");
-  const purchasesTotalValueEl = document.getElementById("purchases-total-value");
+  const materialsTotalValueEl = document.getElementById(
+    "materials-total-value",
+  );
+  const purchasesTotalValueEl = document.getElementById(
+    "purchases-total-value",
+  );
 
   const personNameInput = document.getElementById("person-name");
   const personCnpInput = document.getElementById("person-cnp");
@@ -229,7 +233,9 @@
   function getCardPriceType(card, material) {
     if (!AppConfig.materialHasExtraPrice(material)) return "standard";
     const priceTypeSelect = card.querySelector(".price-type-select");
-    return priceTypeSelect && priceTypeSelect.value === "extra" ? "extra" : "standard";
+    return priceTypeSelect && priceTypeSelect.value === "extra"
+      ? "extra"
+      : "standard";
   }
 
   function updateItemCard(card) {
@@ -332,7 +338,8 @@
     const subtotal = validPrice * validQty;
 
     row.dataset.subtotal = String(subtotal);
-    row.querySelector(".purchase-subtotal-value").textContent = AppConfig.formatRON(subtotal);
+    row.querySelector(".purchase-subtotal-value").textContent =
+      AppConfig.formatRON(subtotal);
 
     recalcTotal();
   }
@@ -353,7 +360,8 @@
     if (purchasesTotal > 0) {
       totalBreakdown.style.display = "block";
       materialsTotalValueEl.textContent = AppConfig.formatRON(materialsTotal);
-      purchasesTotalValueEl.textContent = "-" + AppConfig.formatRON(purchasesTotal);
+      purchasesTotalValueEl.textContent =
+        "-" + AppConfig.formatRON(purchasesTotal);
     } else {
       totalBreakdown.style.display = "none";
     }
@@ -456,7 +464,9 @@
 
     rows.forEach(function (row) {
       const name = row.querySelector(".purchase-name-input").value.trim();
-      const price = parseFloat(row.querySelector(".purchase-price-input").value);
+      const price = parseFloat(
+        row.querySelector(".purchase-price-input").value,
+      );
       const qty = parseFloat(row.querySelector(".purchase-qty-input").value);
       const validPrice = isFinite(price) && price > 0 ? price : 0;
       const validQty = isFinite(qty) && qty > 0 ? qty : 0;
@@ -487,7 +497,13 @@
     return "ATV-" + datePart + "-" + timePart + "-" + rand;
   }
 
-  function buildReceiptHTML(items, materialsTotal, purchases, purchasesTotal, netTotal) {
+  function buildReceiptHTML(
+    items,
+    materialsTotal,
+    purchases,
+    purchasesTotal,
+    netTotal,
+  ) {
     const personName = personNameInput.value.trim();
     const personCnp = personCnpInput.value.trim();
     const make = vehicleMakeInput.value.trim();
@@ -668,7 +684,18 @@
 
   // ---------- Romanian number-to-words (for the official "Adeverință" form) ----------
 
-  var RO_UNITS = ["zero", "unu", "doi", "trei", "patru", "cinci", "șase", "șapte", "opt", "nouă"];
+  var RO_UNITS = [
+    "zero",
+    "unu",
+    "doi",
+    "trei",
+    "patru",
+    "cinci",
+    "șase",
+    "șapte",
+    "opt",
+    "nouă",
+  ];
   var RO_TEENS = [
     "zece",
     "unsprezece",
@@ -681,7 +708,18 @@
     "optsprezece",
     "nouăsprezece",
   ];
-  var RO_TENS = ["", "", "douăzeci", "treizeci", "patruzeci", "cincizeci", "șaizeci", "șaptezeci", "optzeci", "nouăzeci"];
+  var RO_TENS = [
+    "",
+    "",
+    "douăzeci",
+    "treizeci",
+    "patruzeci",
+    "cincizeci",
+    "șaizeci",
+    "șaptezeci",
+    "optzeci",
+    "nouăzeci",
+  ];
 
   function roUnitWord(x, fem) {
     if (fem && x === 1) return "una";
@@ -768,7 +806,6 @@
   }
 
   function buildOfficialFormHTML(items, materialsTotal) {
-    const receiptId = generateReceiptId();
     const dateStr = new Date().toLocaleDateString("ro-RO");
 
     const personName = personNameInput.value.trim();
@@ -784,12 +821,16 @@
     const transportPlate = vehiclePlateInput.value.trim();
     const sourceIsOwn = declarationOwnRadio.checked;
 
-    const taxAmount = materialsTotal * 0.1;
-    const fondMediuAmount = materialsTotal * 0.02;
-    const total = materialsTotal - taxAmount - fondMediuAmount;
+    const NET_FACTOR = 0.88; // 1 - 10% - 2%
+    const grossMaterialsTotal = materialsTotal / NET_FACTOR;
+    const taxAmount = grossMaterialsTotal * 0.1;
+    const fondMediuAmount = grossMaterialsTotal * 0.02;
+    const total = grossMaterialsTotal - taxAmount - fondMediuAmount;
 
     let rows = "";
     items.forEach(function (it) {
+      const grossPrice = it.price / NET_FACTOR;
+      const grossSubtotal = it.subtotal / NET_FACTOR;
       rows +=
         "<tr>" +
         "<td>" +
@@ -800,10 +841,10 @@
         AppConfig.formatKg(it.netKg) +
         "</td>" +
         '<td class="num">' +
-        AppConfig.formatRON(it.price) +
+        AppConfig.formatRON(grossPrice) +
         "</td>" +
         '<td class="num">' +
-        AppConfig.formatRON(it.subtotal) +
+        AppConfig.formatRON(grossSubtotal) +
         "</td>" +
         "</tr>";
     });
@@ -851,9 +892,7 @@
       'Tip deșeu/Kg: <span class="official-dotted-blank"></span>' +
       "</div>" +
       "</div>" +
-      '<h2 class="official-title">ADEVERINȚĂ<br><span>de primire și de plată nr. ' +
-      escapeHtml(receiptId) +
-      "</span></h2>" +
+      '<h2 class="official-title">ADEVERINȚĂ<br><span>de primire și de plată nr. <span class="official-dotted-blank official-dotted-blank-inline"></span></span></h2>' +
       '<p class="official-body">' +
       "S-au primit de la <strong>" +
       (escapeHtml(personName) || "-") +
@@ -948,7 +987,13 @@
 
     const netTotal = materialsTotal - purchasesTotal;
 
-    const receiptHtml = buildReceiptHTML(items, materialsTotal, purchases, purchasesTotal, netTotal);
+    const receiptHtml = buildReceiptHTML(
+      items,
+      materialsTotal,
+      purchases,
+      purchasesTotal,
+      netTotal,
+    );
 
     const measurer = document.createElement("div");
     measurer.style.position = "fixed";

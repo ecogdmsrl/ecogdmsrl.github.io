@@ -925,12 +925,16 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   min-width: 160px;
   border-bottom: 1px dotted #666;
 }
+.official-dotted-blank-inline {
+  min-width: 50px;
+  margin-left: 4px;
+}
 .official-title {
   text-align: center;
   margin: 0 0 18px;
   font-size: 18px;
 }
-.official-title span { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; }
+.official-title > span { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; }
 .official-body {
   margin: 0 0 16px;
   text-align: justify;
