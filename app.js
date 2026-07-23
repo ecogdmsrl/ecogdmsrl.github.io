@@ -70,6 +70,8 @@
   const materialsTotalValueEl = document.getElementById("materials-total-value");
   const purchasesTotalValueEl = document.getElementById("purchases-total-value");
 
+  const personNameInput = document.getElementById("person-name");
+  const personCnpInput = document.getElementById("person-cnp");
   const vehicleMakeInput = document.getElementById("vehicle-make");
   const vehiclePlateInput = document.getElementById("vehicle-plate");
   const printBtn = document.getElementById("print-btn");
@@ -356,6 +358,8 @@
   resetBtn.addEventListener("click", function () {
     if (confirm(t("reset_confirm"))) {
       resetAll();
+      personNameInput.value = "";
+      personCnpInput.value = "";
       vehicleMakeInput.value = "";
       vehiclePlateInput.value = "";
     }
@@ -453,6 +457,8 @@
   }
 
   function buildReceiptHTML(items, materialsTotal, purchases, purchasesTotal, netTotal) {
+    const personName = personNameInput.value.trim();
+    const personCnp = personCnpInput.value.trim();
     const make = vehicleMakeInput.value.trim();
     const plate = vehiclePlateInput.value.trim();
     const dateStr = new Date().toLocaleString("ro-RO");
@@ -566,6 +572,16 @@
       escapeHtml(t("receipt_date_label")) +
       "</strong> " +
       escapeHtml(dateStr) +
+      "</div>" +
+      "<div><strong>" +
+      escapeHtml(t("receipt_name_label")) +
+      "</strong> " +
+      (escapeHtml(personName) || "-") +
+      "</div>" +
+      "<div><strong>" +
+      escapeHtml(t("receipt_cnp_label")) +
+      "</strong> " +
+      (escapeHtml(personCnp) || "-") +
       "</div>" +
       "<div><strong>" +
       escapeHtml(t("receipt_make_label")) +

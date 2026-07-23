@@ -303,7 +303,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
 .remove-btn:hover, .remove-material-btn:hover { background: #fbdedb; }
 .remove-btn:active, .remove-material-btn:active { transform: scale(0.95); }
 
-#add-row-btn, #add-material-btn {
+#add-row-btn, #add-material-btn, #add-purchase-btn {
   margin-top: 2px;
   width: 100%;
   padding: 15px;
@@ -316,8 +316,8 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   cursor: pointer;
   transition: background .15s, transform .1s;
 }
-#add-row-btn:hover, #add-material-btn:hover { background: #e2f5e7; }
-#add-row-btn:active, #add-material-btn:active { transform: translateY(1px); }
+#add-row-btn:hover, #add-material-btn:hover, #add-purchase-btn:hover { background: #e2f5e7; }
+#add-row-btn:active, #add-material-btn:active, #add-purchase-btn:active { transform: translateY(1px); }
 
 #total-card {
   background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
@@ -521,7 +521,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   color: var(--muted);
   margin: 0 0 12px;
 }
-#vehicle-make, #vehicle-plate {
+#vehicle-make, #vehicle-plate, #person-name, #person-cnp {
   width: 100%;
   padding: 11px 10px;
   font-size: 16px;
@@ -531,7 +531,7 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   color: var(--text);
   transition: border-color .15s, box-shadow .15s;
 }
-#vehicle-make:focus, #vehicle-plate:focus {
+#vehicle-make:focus, #vehicle-plate:focus, #person-name:focus, #person-cnp:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
