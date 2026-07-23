@@ -2,7 +2,8 @@
   {
     "name": "Deșeu fier greu",
     "nameHu": "Nehéz vashulladék",
-    "pricePerKg": 0.7
+    "pricePerKg": 0.7,
+    "priceCleanPerKg": 0.65
   },
   {
     "name": "Deșeu fier",
@@ -12,36 +13,51 @@
   {
     "name": "Deșeu alamă",
     "nameHu": "Sárgarézhulladék",
-    "pricePerKg": 11.44
+    "pricePerKg": 11,
+    "priceCleanPerKg": 13
   },
   {
     "name": "Deșeu cupru",
     "nameHu": "Rézhulladék",
-    "pricePerKg": 23.36
+    "pricePerKg": 23,
+    "priceCleanPerKg": 25
   },
   {
     "name": "Deșeu aluminiu",
     "nameHu": "Alumíniumhulladék",
-    "pricePerKg": 2.64
+    "pricePerKg": 2.5,
+    "priceCleanPerKg": 3
   },
   {
     "name": "Deșeu alu jante",
     "nameHu": "Alumínium felni hulladék",
-    "pricePerKg": 4.4
+    "pricePerKg": 5
   },
   {
     "name": "Deșeu inox",
     "nameHu": "Inox (rozsdamentes acél) hulladék",
-    "pricePerKg": 2.64
+    "pricePerKg": 2.5,
+    "priceCleanPerKg": 3
   },
   {
     "name": "Deșeu plumb",
     "nameHu": "Ólomhulladék",
-    "pricePerKg": 1.82
+    "pricePerKg": 1.5
   },
   {
     "name": "Deșeu acumulatoare",
     "nameHu": "Akkumulátor hulladék",
-    "pricePerKg": 1.7
+    "pricePerKg": 2
+  },
+  {
+    "name": "Aluminiu sârmă",
+    "nameHu": "Alumíniumdrót",
+    "pricePerKg": 6
+  },
+  {
+    "name": "Deșeu electronic",
+    "nameHu": "Elketromos hulladék",
+    "pricePerKg": 0.5,
+    "priceCleanPerKg": 0.7
   }
 ]
