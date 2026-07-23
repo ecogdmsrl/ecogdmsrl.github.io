@@ -537,6 +537,21 @@ select:focus, .kg-input:focus, .kg-loaded-input:focus, .kg-empty-input:focus, .p
   box-shadow: 0 0 0 3px rgba(31, 157, 85, 0.15);
   background: #fff;
 }
+#person-cnp.field-invalid {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+#person-cnp.field-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+}
+.field-error {
+  display: none;
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.field-error.visible { display: block; }
 
 /* ---------- Purchased goods (levonás az összegből) ---------- */
 .purchases-card {

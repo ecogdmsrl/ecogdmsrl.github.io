@@ -72,10 +72,21 @@
 
   const personNameInput = document.getElementById("person-name");
   const personCnpInput = document.getElementById("person-cnp");
+  const personCnpError = document.getElementById("person-cnp-error");
   const vehicleMakeInput = document.getElementById("vehicle-make");
   const vehiclePlateInput = document.getElementById("vehicle-plate");
   const printBtn = document.getElementById("print-btn");
   const printArea = document.getElementById("print-area");
+
+  function validatePersonCnp() {
+    const raw = personCnpInput.value.trim();
+    const isValid = raw === "" || /^[0-9]{13}$/.test(raw);
+    personCnpInput.classList.toggle("field-invalid", !isValid);
+    personCnpError.classList.toggle("visible", !isValid);
+    return isValid;
+  }
+
+  personCnpInput.addEventListener("input", validatePersonCnp);
 
   function itemCount() {
     return itemsList.querySelectorAll(".item-card").length;
@@ -360,6 +371,7 @@
       resetAll();
       personNameInput.value = "";
       personCnpInput.value = "";
+      validatePersonCnp();
       vehicleMakeInput.value = "";
       vehiclePlateInput.value = "";
     }

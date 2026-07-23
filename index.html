@@ -55,7 +55,8 @@
         </div>
         <div class="field">
           <label data-i18n="person_cnp_label">CNP</label>
-          <input type="text" id="person-cnp" inputmode="numeric" data-i18n-placeholder="person_cnp_placeholder" placeholder="1234567890123">
+          <input type="text" id="person-cnp" inputmode="numeric" maxlength="13" data-i18n-placeholder="person_cnp_placeholder" placeholder="1234567890123">
+          <span id="person-cnp-error" class="field-error" data-i18n="person_cnp_error">A CNP-nek pontosan 13 számjegyből kell állnia.</span>
         </div>
       </div>
     </div>
